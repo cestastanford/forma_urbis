@@ -14,16 +14,38 @@ if (!FUR) window.FUR = {};
 FUR.data = (function(undefined) {
 
     /*
-    *   Locations of data sets.
+    *   Locations of data sets
     */
-    var LAYER_INDEX = 'data/layers.json';
-    var FILTERS_INDEX = 'data/filters.json';
+    var LAYER_INDEX_URL = 'data/layers.json';
+    var FILTER_INDEX_URL = 'data/filters.json';
 
     /*
-    *   Loads the index of layers and the
+    *   Instance variables
     */
-    var
-    $.getJSON(LAYER_INDEX)
+    var layerMaps;
+    var layers;
+    var mappedLayers;
+    var filters;
+
+    /*
+    *   Loads the layer index file.
+    */
+    var promise_loadLayerIndex = FUR.util.json(LAYER_INDEX_URL);
+    promise_loadLayerIndex.then(function(data) {
+
+        loadLayerMaps.
+
+    })
+    .error(FUR.util.danger(message));
+    /*
+    *   Loads the layer map files.
+    */
+    var promises_loadLayerMaps = [];
+    for ()
+
+
+
+
     .fail(function(error) {
 
         FUR.util.danger('No layer index found at \'' + LAYER_INDEX + '\'.');
@@ -48,10 +70,10 @@ FUR.data = (function(undefined) {
     */
     var main = (function(this) {
 
-        var promises = [];
-        setupProgressView(promises);
+        loadLayerIndex();
+        loadVectorLayers();
 
-        loadLayers();
+
         loadVectorLayers();
         mapVectorLayers();
         loadFilters();
