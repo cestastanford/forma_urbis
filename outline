@@ -1,0 +1,178 @@
+>>>>>>>Outline<<<<<<<<<
+
+**Views**
+
+Map View
+--------------
+- Methods (other modules can call these)
+    -> Add/Remove Layer (layer info, [vector feature collection])
+    -> Show/Hide a Popup (vector feature)
+    -> Mark/Unmark as Selected/Detailed (vector feature)
+    -> Perform Location Search
+
+- Input (user input triggers)
+    - Select/Unselect Feature -> Selection/Detail Controller
+    - Detail Feature -> Selection/Detail Controller
+    - Update Location -> Search Controller
+    - Finish Location Search -> Filters View
+
+
+Details View
+--------------
+- Methods
+    -> Detail Feature (vector feature)
+
+- Input
+    - Select Feature -> Selection/Detail Controller
+    - Hide All Popups -> Selection/Detail Controller
+
+
+Results List View
+--------------
+- Methods
+    -> Add/Remove Layer of Results (layer info, vector feature collection)
+    -> Mark/Unmark as Selected/Detailed (vector feature)
+
+- Input
+    - Select/Unselect Feature -> Selection/Detail Controller
+
+
+Filters View
+--------------
+- Methods
+    -> Register Filter Template (filter info)
+    -> Register/Unregister Layer (layer info)
+    -> Receive & Store Location Search
+
+- Input
+    - Add/Remove Filters & Contents -> Search Controller
+    - Initiate Location Search -> Map View
+
+
+Layer List View
+--------------
+- Methods
+    -> Register Folder (folder info)
+    -> Register Layer (layer info)
+
+
+- Input
+    - Add/Remove Layer -> Search Controller
+
+
+URL View
+--------------
+- Methods
+    -> Update URL (layers & filters state)
+    -> Read from URL
+
+
+
+**Controllers & Models**
+
+Selection/Detail Controller
+--------------
+- Paths
+    -> Select/Unselect Feature (vector feature) ->
+        Selection/Detail Model : Update & Get New Selection State
+        Map View : Mark as Selected/Unselected
+        Map View : Show/Hide Popup
+        Results List View : Mark as Selected/Unselected
+
+    -> Detail Feature (vector feature) ->
+        Selection/Detail Model : Update & Get New Selection State
+        Map View : Unmark Old / Mark New as Detailed
+        Results List View : Unmark Old / Mark New as Detailed
+        Detail View : Detail Feature
+
+
+Selection/Detail Model
+--------------
+- Fields
+    - Selected Features
+    - Detailed Feature
+
+
+Search Controller
+--------------
+- Init
+    - Read from URL -> URL View
+    - Search Model : Set Layers & Filters State
+    - Apply Filters to Layers
+
+- Paths
+    -> Add/Remove Layer (layer info) ->
+        Search Model : Update Active Layers
+        URL View : Update URL
+        (if Add) Filter Worker : Filter Layer
+        Search Model : Update Active Filtered Layers
+        Map View : Add/Remove Filtered Layer
+        Results List View : Add/Remove Layer
+        Filters View : Register/Unregister Layer
+
+    -> Add/Remove Filter (filter info) ->
+        Search Model : Update Active Filters & Values
+        URL View : Update URL
+        Search Model : Get Active Layers & Filters
+        Filter Worker : Filter Active Layers
+        Search Model : Update Active Filtered Layers
+        Map View : Replace All Layers
+        Results List View : Replace All Layers
+
+    -> Update Location (location info)
+        Search Model : Update Map Location
+        URL View : Update
+
+    -> Apply Filters to Layers
+        Search Model & Data Model : Get Layers & Filters
+        Filter Worker : Filter Layers
+        Search Model : Save Filtered Layers
+
+
+Search Model
+--------------
+- Fields
+    - Active Layers
+    - Active Filters
+    - Active Filter Values
+    - Map Location
+    - Active Filtered Layers
+    - Summary of all this
+
+
+Data Model
+--------------
+- Init
+    - Load System Data (types, formats, conversions, etc)
+    - Load Layer Maps
+    - Load Vector Layer GeoJSON
+    - Load Filter Templates
+    - Preprocess filter data -> Filters View
+    - Summarize state of system for console
+
+- Fields
+    - Raw Layers & Fields
+    - Modified Layers & Fields???
+    - Filter Templates
+
+
+Filter Worker
+--------------
+- Init
+    - Load Relevant Conversions
+    - Load Relevant Filter Function
+
+- Paths
+    -> Filter Layer
+        Convert and Filter Each Item for Each Field
+        Send back Filtered Layer
+
+
+
+
+
+
+
+
+
+

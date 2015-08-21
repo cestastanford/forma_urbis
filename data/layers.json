@@ -1,0 +1,8 @@
+{
+    "layers": [
+
+        "data/layermaps/nolli_raster.json",
+        "data/layermaps/nolli_points_golden.json",
+
+    ]
+}
