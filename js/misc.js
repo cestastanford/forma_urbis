@@ -1,6 +1,6 @@
 // ------------------------------------------------------------------------- //
 // ------------------------------------------------------------------------- //
-// -- util.js (JavaScript) ------------------------------------------------- //
+// -- misc.js (JavaScript) ------------------------------------------------- //
 // -- written by Cody M Leff (codymleff@gmail.com) ------------------------- //
 // -- for Forma Urbis Romae at CESTA - Spatial History Lab ----------------- //
 // ------------------------------------------------------------------------- //
@@ -8,10 +8,10 @@
 
 
 /*
-*   Creates the namespace object for the util module.
+*   Creates the namespace object for the misc module.
 */
-if (!FUR) window.FUR = {};
-FUR.util = (function(undefined) {
+if (!window.FUR) window.FUR = {};
+FUR.misc = (function(undefined) {
 
 
     /*
@@ -32,7 +32,11 @@ FUR.util = (function(undefined) {
             request.onload = function() {
 
                 //  call the resolve function if request succeeded
-                if (request.status === 200) resolve(request.response);
+                //  REQUEST STATUS 0 FOR LOCAL ONLY
+                if (request.status === 200 || (request.status === 0 && request.response)) {
+                    var response = JSON.parse(request.response);
+                    resolve(response);
+                }
 
                 //  call the reject function if request failed
                 else reject(request.statusText);
@@ -51,16 +55,24 @@ FUR.util = (function(undefined) {
     };
 
     /*
-    *   Displays a danger message on the screen.
+    *   Displays a danger message on the console.
     */
     var danger = function(message, object) {
-        console.log('Danger: ' + message, object);
+        console.error('Danger: ' + message, object);
+    };
+
+    /*
+    *   Displays a result on the console.
+    */
+    var result = function(result) {
+        console.log('Result: ', result);
     };
 
     return {
 
-        json: json;
-        danger: danger;
+        json: json,
+        danger: danger,
+        result: result,
 
     }
 

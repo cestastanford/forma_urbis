@@ -7,12 +7,12 @@
 // ------------------------------------------------------------------------- //
 
 
-(function(window, document, undefined) {
+(function() {
 
-    $(document).ready(function() {
+    document.addEventListener("DOMContentLoaded", function(event) {
 
-        console.log('Main loaded!');
+
 
     });
 
-})(window, document.window);
+})();

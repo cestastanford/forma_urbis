@@ -54,6 +54,7 @@ Layer List View
 - Methods
     -> Register Folder (folder info)
     -> Register Layer (layer info)
+    -> Mark layer as loading / done
 
 
 - Input
@@ -145,6 +146,7 @@ Data Model
 - Init
     - Load System Data (types, formats, conversions, etc)
     - Load Layer Maps
+    - Load Folder Maps
     - Load Vector Layer GeoJSON
     - Load Filter Templates
     - Preprocess filter data -> Filters View
