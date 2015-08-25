@@ -22,14 +22,16 @@ FUR.data = (function(undefined) {
     var LAYER_HIERARCHY_URL = 'data/layers.json';
     var json = FUR.misc.json;
     var danger = FUR.misc.danger;
+    var exports = FUR.data;
 
 
     /*
     *   Instance variables
     */
-    var datasets;
+    var datasets = { raster: [], vector: [] };
     var layerHierarchy;
     var filterTemplates;
+    var filterAssets = {};
 
     /*
     *   Returns a promise to load dataset metadata.
@@ -54,31 +56,11 @@ FUR.data = (function(undefined) {
     */
     var loadVectorDatasetGeoJSON = function(datasetsIncoming) {
 
-        datasets = datasetsIncoming;
-
-        var vectorDatasets = datasets.filter(function(dataset) {
-            return dataset.type === 'vector';
-        });
-
-        var promises = vectorDatasets.map(function(vectorDataset) {
+        var promises = datasets.vector.map(function(vectorDataset) {
             return json(vectorDataset.url);
         });
 
         return Promise.all(promises);
-    };
-
-
-    /*
-    *   Attaches each GeoJSON object to its respective vector dataset.
-    */
-    var attachGeoJSON = function(geoJSON) {
-
-        var counter = 0;
-        for (var i = 0; i < datasets.length; i++) {
-
-            var dataset = datasets[i];
-            if (dataset.type === 'vector') dataset.data = geoJSON[counter++];
-        }
     };
 
 
@@ -88,70 +70,164 @@ FUR.data = (function(undefined) {
     */
     var verifyLayerGroup = function(current) {
 
-        if (!current || !current.children) {
-            console.error('Invalid layer group!');
-            return false;
-        }
+        if (!current || !current.children || current.children.length < 1) return false;
 
         for (var i = 0; i < current.children.length; i++) {
 
             if (current.children[i].role === 'group') {
 
                 if (!verifyLayerGroup(current.children[i])) {
-
+                    danger('Layer group failed: ' + current.children[i].name);
                     return false;
                 }
             } else {
 
-                var match = datasets.filter(function(dataset) {
+                var match = datasets.vector.filter(function(dataset) {
                     return dataset.name === current.children[i].source;
-                });
+                })[0];
 
-                if (match < 1) {
+                if (!match) match = datasets.raster.filter(function(dataset) {
+                    return dataset.name === current.children[i].source;
+                })[0];
 
+                if (!match) {
+                    danger('Layer failed: ' + current.children[i].name);
                     return false;
                 }
+
+                current.children[i].source = match;
+
             }
         }
 
         return true;
     };
 
+
     /*
     *   Verifies the layer hierarchy and adds it to a public instance variable.
     */
     var setupLayerHierarchy = function(layerHierarchyIncoming) {
+
         return new Promise(function(resolve, reject) {
 
             if (verifyLayerGroup(layerHierarchyIncoming)) {
-                layerHierarchy = layerHierarchyIncoming.children;
-                resolve();
-            } else reject();
 
+                layerHierarchy = layerHierarchyIncoming.children;
+
+                resolve();
+
+            } else reject('Invalid Layer Hierarchy');
         });
     };
+
+
+    /*
+    *   Finds all feature types in the datasets.
+    */
+    var getFeatureTypes = function() {
+
+        var featureTypes = {};
+
+        //  In each vector dataset...
+        for (var i = 0; i < datasets.vector.length; i++) {
+            var dataset = datasets.vector[i];
+
+            //  ...in each field...
+            for (var j = 0; j < dataset.fields.length; j++) {
+                var field = dataset.fields[j];
+
+                //  ...if the field is of type 'feature-type'...
+                if (field.type === 'feature-type') {
+
+                    //  ...add all possible values of that field to the list,
+                    //  noting the count.
+                    for (var k = 0; k < dataset.data.features.length; k++) {
+                        var feature = dataset.data.features[k];
+                        var type = feature.properties[field.name]
+                        if (type) {
+                            if (featureTypes[type]) {
+                                featureTypes[type] += 1;
+                            } else featureTypes[type] = 1;
+                        }
+                    }
+                }
+            }
+        }
+
+        return featureTypes;
+    };
+
+
+    /*
+    *   Finds and list the subtypes found for each type in each dataset.
+    */
+    var getSubtypes = function() {
+
+        var subtypes = {
+
+            text: [],
+            date: [],
+            'feature-type': [],
+            uniqueID: [],
+            location: [],
+
+        };
+
+        for (var i = 0; i < datasets.vector.length; i++) {
+
+            var vectorDataset = datasets.vector[i];
+            for (var j = 0; j < vectorDataset.fields.length; j++) {
+
+                var type = vectorDataset.fields[j].type;
+                var subtype = vectorDataset.fields[j].subtype;
+
+                var index = subtypes[type].indexOf(subtype);
+                if (index < 0) {
+
+                    subtypes[type].push(subtype);
+                }
+
+            }
+
+        }
+
+        return subtypes;
+    }
+
 
     /*
     *   Verifies the layer hierarchy and adds it to a public instance variable.
     */
     var setupFilterTemplates = function(filterTemplatesIncoming) {
 
-        filterTemplates = filterTemplatesIncoming.list;
+        return new Promise(function(resolve, reject) {
+
+            filterTemplates = filterTemplatesIncoming.list;
+
+            filterAssets.featureTypes = getFeatureTypes();
+            filterAssets.subtypes = getSubtypes();
+
+            resolve();
+        });
 
     };
+
 
     /*
     *   Prints to the console the status of the data model.
     */
     var consoleStatus = function() {
 
-        console.log('Status Report');
+        console.log('Data Status');
         console.log('---------------------');
-        console.log('Datasets: ' + datasets.length + ' loaded.  ', datasets);
+        console.log('Datasets: ' + datasets.vector.length + ' vector and ' + datasets.raster.length + ' raster loaded.  ', datasets);
         console.log('Layer Hierarchy: ' + layerHierarchy.length + ' top-level entries.  ', layerHierarchy);
         console.log('Filter Templates: ' + filterTemplates.length + ' loaded.  ', filterTemplates);
+        console.log('Filter Assets: ', filterAssets);
 
     };
+
 
     /*
     *   Executes the asynchronous loading process.
@@ -159,8 +235,17 @@ FUR.data = (function(undefined) {
     Promise.resolve()
     .then(function() { return json(DATASET_INDEX_URL); }) // downloads the dataset index
     .then(loadDatasetMetadata) // downloads the dataset maps listed in the index
+    .then(function(datasetsIncoming) { // separates the datasets by type
+
+        datasetsIncoming.forEach(function(dataset) { datasets[dataset.type].push(dataset); });
+
+    })
     .then(loadVectorDatasetGeoJSON) // downloads the vector data for the vector datasets
-    .then(attachGeoJSON) // saves the vector GeoJSON with the corresponding dataset
+    .then(function(geoJSON) { // saves the vector GeoJSON with the corresponding dataset
+
+        for (var i = 0; i < geoJSON.length; i++) datasets.vector[i].data = geoJSON[i];
+
+    })
 
     .then(function() { return json(LAYER_HIERARCHY_URL); }) // downloads the layer hierarchy
     .then(setupLayerHierarchy) // verifies and publishes the layer hierarchy
@@ -168,20 +253,25 @@ FUR.data = (function(undefined) {
     .then(function () { return json(FILTER_TEMPLATES_URL); }) // downloads the filter templates
     .then(setupFilterTemplates) // gathers required data and publishes the filter templates
 
-    .then(consoleStatus)
+    .then(function() {
+
+        FUR.data.ready = true;
+        FUR.data.layerHierarchy = layerHierarchy;
+        FUR.data.filterTemplates = filterTemplates;
+        FUR.data.filterAssets = filterAssets;
+
+        consoleStatus();
+
+    })
     .catch(danger);
+
 
 
     /*
     *   Module Exports
     */
     return {
-
         ready: false,
-        layers: layerHierarchy,
-        filters: filterTemplates,
-        consoleStatus: consoleStatus,
-
     };
 
 })();

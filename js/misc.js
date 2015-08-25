@@ -67,7 +67,7 @@ FUR.misc = (function(undefined) {
     *   Displays a danger message on the console.
     */
     var danger = function(message, object) {
-        console.error('Danger: ', message, object);
+        console.error(message);
     };
 
     /*

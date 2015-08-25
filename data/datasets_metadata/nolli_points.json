@@ -10,7 +10,7 @@
         {
             "name": "ACCEPTED_N",
             "type": "text",
-            "subtype": "name",
+            "subtype": "Feature Name",
             "format": "mixed-case",
             "displayName": "Accepted Name",
             "description": "The most commonly-used name for the feature."
@@ -18,7 +18,7 @@
         {
             "name": "ALPH_NAM",
             "type": "text",
-            "subtype": "name",
+            "subtype": "Feature Name",
             "format": "mixed-case",
             "displayName": "Alternate Name",
             "description": "An alternate name for the feature."
@@ -26,7 +26,7 @@
         {
             "name": "ALPH_NAM_1",
             "type": "text",
-            "subtype": "name",
+            "subtype": "Feature Name",
             "format": "mixed-case",
             "displayName": "Alternate Name",
             "description": "An alternate name for the feature."
@@ -34,7 +34,7 @@
         {
             "name": "ALPH_NAM_2",
             "type": "text",
-            "subtype": "name",
+            "subtype": "Feature Name",
             "format": "mixed-case",
             "displayName": "Alternate Name",
             "description": "An alternate name for the feature."
@@ -42,7 +42,7 @@
         {
             "name": "ANNOTATION",
             "type": "text",
-            "subtype": "note",
+            "subtype": "Note",
             "format": "mixed-case",
             "displayName": "Annotation",
             "description": "An annotation for the feature."
@@ -50,7 +50,7 @@
         {
             "name": "ARCHITECT",
             "type": "text",
-            "subtype": "person",
+            "subtype": "Architect",
             "format": "mixed-case",
             "displayName": "Architect",
             "description": "The architect of the feature."
@@ -58,7 +58,7 @@
         {
             "name": "ERRATA_NOT",
             "type": "text",
-            "subtype": "note",
+            "subtype": "Note",
             "format": "mixed-case",
             "displayName": "Errata",
             "description": "Errata for the feature."
@@ -66,7 +66,7 @@
         {
             "name": "MODERN_LOC",
             "type": "location",
-            "subtype": "modern",
+            "subtype": "Modern Location",
             "format": "text",
             "displayName": "Modern Location",
             "description": "The modern location of the feature."
@@ -74,7 +74,7 @@
         {
             "name": "NOLLI_ID",
             "type": "uniqueID",
-            "subtype": "nolli",
+            "subtype": "Nolli Number",
             "format": "mixed-case",
             "displayName": "Nolli ID",
             "description": "The Nolli ID of the feature from the Nolli Map (same as Nolli Number)."
@@ -82,7 +82,7 @@
         {
             "name": "NOLLI_NAME",
             "type": "text",
-            "subtype": "name",
+            "subtype": "Feature Name",
             "format": "mixed-case",
             "displayName": "Nolli Name",
             "description": "The name of the feature from the Nolli Map."
@@ -90,7 +90,7 @@
         {
             "name": "NOLLI_NUMB",
             "type": "uniqueID",
-            "subtype": "nolli",
+            "subtype": "Nolli Number",
             "format": "mixed-case",
             "displayName": "Nolli Number",
             "description": "The Nolli Number of the feature from the Nolli Map (same as Nolli ID)."
@@ -98,7 +98,7 @@
         {
             "name": "PERIOD",
             "type": "date",
-            "subtype": "period",
+            "subtype": "Period of Construction",
             "format": "text-period",
             "displayName": "Period",
             "description": "The historical period that the feature is from."
@@ -106,7 +106,7 @@
         {
             "name": "REFERENCES",
             "type": "text",
-            "subtype": "note",
+            "subtype": "Note",
             "format": "mixed-case",
             "displayName": "Reference",
             "description": "May be an outside source that noted the feature."
@@ -114,15 +114,15 @@
         {
             "name": "RIONI",
             "type": "location",
-            "subtype": "city-district",
-            "format": "text",
+            "subtype": "Rioni",
+            "format": "text-rioni",
             "displayName": "Rione",
             "description": "The traditional administrative district of Rome containing the feature."
         },
         {
             "name": "TYPE",
-            "type": "type",
-            "subtype": "feature",
+            "type": "feature-type",
+            "subtype": "",
             "format": "mixed-case",
             "displayName": "Feature Type",
             "description": "The type of feature."
