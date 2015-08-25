@@ -1,8 +1,9 @@
 {
 
-    "name": "Nolli Map",
+    "name": "nolli_map_raster",
     "type": "raster",
     "url": "data/raster/nolli_map/{z}/{x}/{y}.png",
-    "tms": "true"
+    "attribution": "Nolli Map",
+    "tms": true
 
 }

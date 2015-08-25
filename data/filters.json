@@ -1,0 +1,26 @@
+{
+
+    "filters": [
+
+        {
+            "filter-name": "matching-case-insensitive-prefix",
+            "applicable-type": "text",
+            "function-input-format": "string"
+        },
+        {
+            "filter-name": "overlapping-date-range",
+            "applicable-type": "date",
+            "function-input-format": "integer, integer"
+        },
+        {
+            "filter-name": "matching-type",
+            "applicable-type": "type",
+            "function-input-format": "integer"
+        },
+        {
+            "filter-name": "matching-case-insensitive-substring",
+            "applicable-type": "uniqueID",
+            "function-input-format": "string"
+        }
+    ]
+}

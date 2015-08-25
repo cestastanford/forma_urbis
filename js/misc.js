@@ -34,7 +34,15 @@ FUR.misc = (function(undefined) {
                 //  call the resolve function if request succeeded
                 //  REQUEST STATUS 0 FOR LOCAL ONLY
                 if (request.status === 200 || (request.status === 0 && request.response)) {
-                    var response = JSON.parse(request.response);
+
+                    try {
+                        var response = JSON.parse(request.response);
+                    }
+
+                    catch(e) {
+                        throw new Error('JSON Parse Error in file ' + request.responseURL);
+                    }
+
                     resolve(response);
                 }
 
@@ -45,7 +53,8 @@ FUR.misc = (function(undefined) {
 
             //  listen for failure
             request.onerror = function() {
-                reject('Network Error');
+
+                reject('Download Error');
             };
 
             //  send the request
@@ -58,7 +67,7 @@ FUR.misc = (function(undefined) {
     *   Displays a danger message on the console.
     */
     var danger = function(message, object) {
-        console.error('Danger: ' + message, object);
+        console.error('Danger: ', message, object);
     };
 
     /*

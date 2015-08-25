@@ -18,7 +18,10 @@ FUR.data = (function(undefined) {
     *   Locations of data sets
     */
     var LAYER_INDEX_URL = 'data/layers.json';
-    var FILTER_INDEX_URL = 'data/filters.json';
+    var FILTER_TEMPLATES_URL = 'data/filters.json';
+    var FOLDER_MAP_URL = 'data/folders.json';
+    var json = FUR.misc.json;
+    var danger = FUR.misc.danger;
 
 
     /*
@@ -26,18 +29,8 @@ FUR.data = (function(undefined) {
     */
     this.layers;
     this.mappedLayers;
+    this.folders;
     this.filters;
-
-
-    /*
-    *   Accepts a URL to the layer index as an argument; returns a promise
-    *   to load the index file.
-    */
-    var loadLayerIndex = function(indexURL) {
-
-        return FUR.misc.json(indexURL);
-    };
-
 
     /*
     *   Accepts an array of layer map URLs from the layer index file as an
@@ -50,7 +43,7 @@ FUR.data = (function(undefined) {
         */
         var promises = layerIndexObject.layers.map(function(layerMapURL) {
 
-            return FUR.misc.json(layerMapURL);
+            return json(layerMapURL);
         });
 
         return Promise.all(promises);
@@ -70,7 +63,7 @@ FUR.data = (function(undefined) {
         });
 
         var promises = vectorLayers.map(function(vectorLayer) {
-            return FUR.misc.json(vectorLayer.url);
+            return json(vectorLayer.url);
         });
 
         return Promise.all(promises);
@@ -82,22 +75,65 @@ FUR.data = (function(undefined) {
     */
     var attachVectorData = function(vectorData) {
 
-        var counter = 0;
-        for (var i = 0; i < this.layers.length; i++) {
+        return new Promise(function(resolve, reject) {
+            var counter = 0;
+            for (var i = 0; i < this.layers.length; i++) {
 
-            var layer = this.layers[i];
-            if (layer.type === 'vector') layer.data = vectorData[counter++];
+                var layer = this.layers[i];
+                if (layer.type === 'vector') layer.data = vectorData[counter++];
+            }
+            resolve();
+        });
+    };
+
+
+    /*
+    *   Recursively verifies that each layer in the folder
+    *   hierarchy has been loaded.
+    */
+    var verifyFolders = function(current) {
+
+        for (var i = 0; i < current.children.length; i++) {
+
+            if (current.children[i].role === 'group') {
+
+                if (!verifyFolders(current.children[i])) {
+
+                    return false;
+                }
+            } else {
+
+                var match = layers.filter(function(layer) {
+                    return layer.name === current.children[i].source;
+                });
+
+                if (match < 1) {
+
+                    return false;
+                }
+            }
         }
+
+        return true;
     };
 
 
     /*
     *   Executes the asynchronous loading process.
     */
-    loadLayerIndex(LAYER_INDEX_URL)
-    .then(loadLayerMaps).catch(FUR.misc.danger)
-    .then(loadVectorLayerGeoJSON).catch(FUR.misc.danger)
-    .then(attachVectorData).catch(FUR.misc.danger);
+    json(LAYER_INDEX_URL)
+    .then(loadLayerMaps, danger)
+    .then(loadVectorLayerGeoJSON, danger)
+    .then(attachVectorData, danger)
+    .then(function() { return json(FOLDER_MAP_URL); }, danger)
+    .then(function(folderData) {
+
+        if (verifyFolders(folderData)) this.folders = folderData;
+        else FUR.misc.danger('Folder verification failed!');
+
+    }, danger)
+    .then(function () { return json(FILTER_TEMPLATES_URL); }, danger)
+    .then(function(data) { console.log(data.filters); }, danger);
 
 
     /*
