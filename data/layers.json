@@ -1,9 +1,31 @@
 {
-    "layers": [
+    "name": "root",
+    "role": "group",
+    "children": [
 
-        "data/layermaps/nolli_raster.json",
-        "data/layermaps/nolli_points.json",
-        "data/layermaps/osm.json"
+        {
+            "name": "Nolli",
+            "role": "group",
+            "children": [
 
+                {
+                    "name": "Raster Map",
+                    "role": "layer",
+                    "source": "nolli_map_raster"
+                },
+                {
+                    "name": "Golden Points",
+                    "role": "layer",
+                    "source": "nolli_points_golden"
+                }
+
+            ]
+        },
+
+        {
+            "name": "Open Street Map",
+            "role": "layer",
+            "source": "osm"
+        }
     ]
 }

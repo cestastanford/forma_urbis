@@ -10,16 +10,16 @@
 /*
 *   Creates the namespace object for the data module.
 */
-if (!FUR) window.FUR = {};
+if (!window.FUR) window.FUR = {};
 FUR.data = (function(undefined) {
 
 
     /*
     *   Locations of data sets
     */
-    var LAYER_INDEX_URL = 'data/layers.json';
+    var DATASET_INDEX_URL = 'data/datasets.json';
     var FILTER_TEMPLATES_URL = 'data/filters.json';
-    var FOLDER_MAP_URL = 'data/folders.json';
+    var LAYER_HIERARCHY_URL = 'data/layers.json';
     var json = FUR.misc.json;
     var danger = FUR.misc.danger;
 
@@ -27,23 +27,21 @@ FUR.data = (function(undefined) {
     /*
     *   Instance variables
     */
-    this.layers;
-    this.mappedLayers;
-    this.folders;
-    this.filters;
+    var datasets;
+    var layerHierarchy;
+    var filterTemplates;
 
     /*
-    *   Accepts an array of layer map URLs from the layer index file as an
-    *   argument; returns a promise to load the layers maps.
+    *   Returns a promise to load dataset metadata.
     */
-    var loadLayerMaps = function(layerIndexObject) {
+    var loadDatasetMetadata = function(datasetIndex) {
 
         /*  map the array of URLs to an array of promises
         *   for loading the JSON at the URLs.
         */
-        var promises = layerIndexObject.layers.map(function(layerMapURL) {
+        var promises = datasetIndex.datasets.map(function(datasetIndex) {
 
-            return json(layerMapURL);
+            return json(datasetIndex);
         });
 
         return Promise.all(promises);
@@ -51,19 +49,19 @@ FUR.data = (function(undefined) {
 
 
     /*
-    *   Accepts a sparse array of vector layers, and returns a promise to
-    *   download the layers' GeoJSON from their respective URLs.
+    *   Accepts a sparse array of vector datasets, and returns a promise to
+    *   download the datasets' GeoJSON from their respective URLs.
     */
-    var loadVectorLayerGeoJSON = function(layers) {
+    var loadVectorDatasetGeoJSON = function(datasetsIncoming) {
 
-        this.layers = layers;
+        datasets = datasetsIncoming;
 
-        var vectorLayers = layers.filter(function(layer) {
-            return layer.type === 'vector';
+        var vectorDatasets = datasets.filter(function(dataset) {
+            return dataset.type === 'vector';
         });
 
-        var promises = vectorLayers.map(function(vectorLayer) {
-            return json(vectorLayer.url);
+        var promises = vectorDatasets.map(function(vectorDataset) {
+            return json(vectorDataset.url);
         });
 
         return Promise.all(promises);
@@ -71,40 +69,42 @@ FUR.data = (function(undefined) {
 
 
     /*
-    *   Attaches each vector data object to its respective vector layer.
+    *   Attaches each GeoJSON object to its respective vector dataset.
     */
-    var attachVectorData = function(vectorData) {
+    var attachGeoJSON = function(geoJSON) {
 
-        return new Promise(function(resolve, reject) {
-            var counter = 0;
-            for (var i = 0; i < this.layers.length; i++) {
+        var counter = 0;
+        for (var i = 0; i < datasets.length; i++) {
 
-                var layer = this.layers[i];
-                if (layer.type === 'vector') layer.data = vectorData[counter++];
-            }
-            resolve();
-        });
+            var dataset = datasets[i];
+            if (dataset.type === 'vector') dataset.data = geoJSON[counter++];
+        }
     };
 
 
     /*
-    *   Recursively verifies that each layer in the folder
+    *   Recursively verifies that each dataset in the layer
     *   hierarchy has been loaded.
     */
-    var verifyFolders = function(current) {
+    var verifyLayerGroup = function(current) {
+
+        if (!current || !current.children) {
+            console.error('Invalid layer group!');
+            return false;
+        }
 
         for (var i = 0; i < current.children.length; i++) {
 
             if (current.children[i].role === 'group') {
 
-                if (!verifyFolders(current.children[i])) {
+                if (!verifyLayerGroup(current.children[i])) {
 
                     return false;
                 }
             } else {
 
-                var match = layers.filter(function(layer) {
-                    return layer.name === current.children[i].source;
+                var match = datasets.filter(function(dataset) {
+                    return dataset.name === current.children[i].source;
                 });
 
                 if (match < 1) {
@@ -117,23 +117,59 @@ FUR.data = (function(undefined) {
         return true;
     };
 
+    /*
+    *   Verifies the layer hierarchy and adds it to a public instance variable.
+    */
+    var setupLayerHierarchy = function(layerHierarchyIncoming) {
+        return new Promise(function(resolve, reject) {
+
+            if (verifyLayerGroup(layerHierarchyIncoming)) {
+                layerHierarchy = layerHierarchyIncoming.children;
+                resolve();
+            } else reject();
+
+        });
+    };
+
+    /*
+    *   Verifies the layer hierarchy and adds it to a public instance variable.
+    */
+    var setupFilterTemplates = function(filterTemplatesIncoming) {
+
+        filterTemplates = filterTemplatesIncoming.list;
+
+    };
+
+    /*
+    *   Prints to the console the status of the data model.
+    */
+    var consoleStatus = function() {
+
+        console.log('Status Report');
+        console.log('---------------------');
+        console.log('Datasets: ' + datasets.length + ' loaded.  ', datasets);
+        console.log('Layer Hierarchy: ' + layerHierarchy.length + ' top-level entries.  ', layerHierarchy);
+        console.log('Filter Templates: ' + filterTemplates.length + ' loaded.  ', filterTemplates);
+
+    };
 
     /*
     *   Executes the asynchronous loading process.
     */
-    json(LAYER_INDEX_URL)
-    .then(loadLayerMaps, danger)
-    .then(loadVectorLayerGeoJSON, danger)
-    .then(attachVectorData, danger)
-    .then(function() { return json(FOLDER_MAP_URL); }, danger)
-    .then(function(folderData) {
+    Promise.resolve()
+    .then(function() { return json(DATASET_INDEX_URL); }) // downloads the dataset index
+    .then(loadDatasetMetadata) // downloads the dataset maps listed in the index
+    .then(loadVectorDatasetGeoJSON) // downloads the vector data for the vector datasets
+    .then(attachGeoJSON) // saves the vector GeoJSON with the corresponding dataset
 
-        if (verifyFolders(folderData)) this.folders = folderData;
-        else FUR.misc.danger('Folder verification failed!');
+    .then(function() { return json(LAYER_HIERARCHY_URL); }) // downloads the layer hierarchy
+    .then(setupLayerHierarchy) // verifies and publishes the layer hierarchy
 
-    }, danger)
-    .then(function () { return json(FILTER_TEMPLATES_URL); }, danger)
-    .then(function(data) { console.log(data.filters); }, danger);
+    .then(function () { return json(FILTER_TEMPLATES_URL); }) // downloads the filter templates
+    .then(setupFilterTemplates) // gathers required data and publishes the filter templates
+
+    .then(consoleStatus)
+    .catch(danger);
 
 
     /*
@@ -142,8 +178,9 @@ FUR.data = (function(undefined) {
     return {
 
         ready: false,
-        layers: this.layers,
-        filters: this.filters,
+        layers: layerHierarchy,
+        filters: filterTemplates,
+        consoleStatus: consoleStatus,
 
     };
 
