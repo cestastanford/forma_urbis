@@ -6,6 +6,9 @@
 // ------------------------------------------------------------------------- //
 // ------------------------------------------------------------------------- //
 
+/*
+*   This module contains some miscellaneous useful functions.
+*/
 
 /*
 *   Creates the namespace object for the misc module.
@@ -67,7 +70,7 @@ FUR.misc = (function(undefined) {
     *   Displays a danger message on the console.
     */
     var danger = function(message, object) {
-        console.error(message);
+        console.error('Danger: ', message);
     };
 
     /*
@@ -76,6 +79,7 @@ FUR.misc = (function(undefined) {
     var result = function(result) {
         console.log('Result: ', result);
     };
+
 
     return {
 

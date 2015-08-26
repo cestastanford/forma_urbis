@@ -6,6 +6,13 @@
 // ------------------------------------------------------------------------- //
 // ------------------------------------------------------------------------- //
 
+/*
+*   This module is responsible for loading, storing and providing access to all
+*   user-provided data (datasets and layer arrangement) and semi-user-provided
+*   data (filters and conversions).  It performs its core functions when first
+*   run, setting the value of FUR.data.ready to 'true' when finished.
+*/
+
 
 /*
 *   Creates the namespace object for the data module.
@@ -15,7 +22,7 @@ FUR.data = (function(undefined) {
 
 
     /*
-    *   Locations of data sets
+    *   Constants
     */
     var DATASET_INDEX_URL = 'data/datasets.json';
     var FILTER_TEMPLATES_URL = 'data/filters.json';
@@ -223,7 +230,7 @@ FUR.data = (function(undefined) {
         console.log('---------------------');
         console.log('Datasets: ' + datasets.vector.length + ' vector and ' + datasets.raster.length + ' raster loaded.  ', datasets);
         console.log('Layer Hierarchy: ' + layerHierarchy.length + ' top-level entries.  ', layerHierarchy);
-        console.log('Filter Templates: ' + filterTemplates.length + ' loaded.  ', filterTemplates);
+        console.log('Filter Templates: loaded.  ', filterTemplates);
         console.log('Filter Assets: ', filterAssets);
 
     };

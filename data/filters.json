@@ -1,35 +1,40 @@
 {
 
-    "list": [
+    "list": {
 
-        {
-            "filter-name": "matching-case-insensitive-prefix",
+        "matching-case-insensitive-word-prefix": {
+            "name": "matching-case-insensitive-word-prefix",
             "applicable-type": "text",
-            "function-input-format": "string"
+            "function-input-format": "string",
+            "ui-input-format": "string"
         },
-        {
-            "filter-name": "overlapping-date-range",
+
+        "overlapping-date-range": {
+            "name": "overlapping-date-range",
             "applicable-type": "date",
             "function-input-format": "integer, integer",
-            "conversions": [
-
-                {
-                    "converts-from": "text-range",
-                    "function": " var conversion = function(input) { return input; }; "
-                }
-
-            ],
-            "function": " var function = function(input, data) { return true; } "
+            "ui-input-format": "string, string"
         },
-        {
-            "filter-name": "matching-type-dropdown",
+
+        "matching-type": {
+            "name": "matching-type",
             "applicable-type": "feature-type",
-            "function-input-format": "string-token"
+            "function-input-format": "string",
+            "ui-input-format": "string"
         },
-        {
-            "filter-name": "matching-case-insensitive-substring",
+
+        "matching-case-insensitive-substring": {
+            "name": "matching-case-insensitive-substring",
             "applicable-type": "uniqueID",
-            "function-input-format": "string"
+            "function-input-format": "string",
+            "ui-input-format": "string"
+        },
+
+        "keyword": {
+            "name": "keyword",
+            "applicable-type": null,
+            "function-input-format": "string",
+            "ui-input-format": "string"
         }
-    ]
+    }
 }

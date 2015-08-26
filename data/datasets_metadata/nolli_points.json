@@ -11,7 +11,7 @@
             "name": "ACCEPTED_N",
             "type": "text",
             "subtype": "Feature Name",
-            "format": "mixed-case",
+            "format": "string",
             "displayName": "Accepted Name",
             "description": "The most commonly-used name for the feature."
         },
@@ -19,7 +19,7 @@
             "name": "ALPH_NAM",
             "type": "text",
             "subtype": "Feature Name",
-            "format": "mixed-case",
+            "format": "string",
             "displayName": "Alternate Name",
             "description": "An alternate name for the feature."
         },
@@ -27,7 +27,7 @@
             "name": "ALPH_NAM_1",
             "type": "text",
             "subtype": "Feature Name",
-            "format": "mixed-case",
+            "format": "string",
             "displayName": "Alternate Name",
             "description": "An alternate name for the feature."
         },
@@ -35,7 +35,7 @@
             "name": "ALPH_NAM_2",
             "type": "text",
             "subtype": "Feature Name",
-            "format": "mixed-case",
+            "format": "string",
             "displayName": "Alternate Name",
             "description": "An alternate name for the feature."
         },
@@ -43,7 +43,7 @@
             "name": "ANNOTATION",
             "type": "text",
             "subtype": "Note",
-            "format": "mixed-case",
+            "format": "string",
             "displayName": "Annotation",
             "description": "An annotation for the feature."
         },
@@ -51,7 +51,7 @@
             "name": "ARCHITECT",
             "type": "text",
             "subtype": "Architect",
-            "format": "mixed-case",
+            "format": "string",
             "displayName": "Architect",
             "description": "The architect of the feature."
         },
@@ -59,7 +59,7 @@
             "name": "ERRATA_NOT",
             "type": "text",
             "subtype": "Note",
-            "format": "mixed-case",
+            "format": "string",
             "displayName": "Errata",
             "description": "Errata for the feature."
         },
@@ -75,7 +75,7 @@
             "name": "NOLLI_ID",
             "type": "uniqueID",
             "subtype": "Nolli Number",
-            "format": "mixed-case",
+            "format": "string",
             "displayName": "Nolli ID",
             "description": "The Nolli ID of the feature from the Nolli Map (same as Nolli Number)."
         },
@@ -83,7 +83,7 @@
             "name": "NOLLI_NAME",
             "type": "text",
             "subtype": "Feature Name",
-            "format": "mixed-case",
+            "format": "string",
             "displayName": "Nolli Name",
             "description": "The name of the feature from the Nolli Map."
         },
@@ -91,7 +91,7 @@
             "name": "NOLLI_NUMB",
             "type": "uniqueID",
             "subtype": "Nolli Number",
-            "format": "mixed-case",
+            "format": "string",
             "displayName": "Nolli Number",
             "description": "The Nolli Number of the feature from the Nolli Map (same as Nolli ID)."
         },
@@ -99,7 +99,7 @@
             "name": "PERIOD",
             "type": "date",
             "subtype": "Period of Construction",
-            "format": "text-period",
+            "format": "text-period-slash-delim",
             "displayName": "Period",
             "description": "The historical period that the feature is from."
         },
@@ -107,7 +107,7 @@
             "name": "REFERENCES",
             "type": "text",
             "subtype": "Note",
-            "format": "mixed-case",
+            "format": "string",
             "displayName": "Reference",
             "description": "May be an outside source that noted the feature."
         },
@@ -123,7 +123,7 @@
             "name": "TYPE",
             "type": "feature-type",
             "subtype": "",
-            "format": "mixed-case",
+            "format": "string",
             "displayName": "Feature Type",
             "description": "The type of feature."
         }
