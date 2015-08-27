@@ -3,7 +3,8 @@
 
         "data/datasets_metadata/nolli_raster.json",
         "data/datasets_metadata/nolli_points.json",
-        "data/datasets_metadata/osm.json"
+        "data/datasets_metadata/osm.json",
+        "data/datasets_metadata/scavi.json"
 
     ]
 }

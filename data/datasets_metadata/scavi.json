@@ -1,0 +1,100 @@
+{
+
+    "name": "scavi_points",
+    "type": "vector",
+    "url": "data/sources/geojson/scavi_points.geojson",
+    "labelField": 0,
+    "fields": [
+
+        {
+            "name": "ACCENSION_",
+            "type": "uniqueID",
+            "subtype": "Lanciani Acc. No.",
+            "format": "string",
+            "displayName": "Accession Number",
+            "description": "Reference to the plate and scavi number on the Lanciani map."
+        },
+        {
+            "name": "MAP_ANNOTA",
+            "type": "uniqueID",
+            "subtype": "Lanciani Scavi No.",
+            "format": "string",
+            "displayName": "Map Annotation",
+            "description": "Text of annotation on map."
+        },
+        {
+            "name": "HISTORICAL",
+            "type": "text",
+            "subtype": "Feature Name",
+            "format": "string",
+            "displayName": "Site Name",
+            "description": "Name of site."
+        },
+        {
+            "name": "START_DATE",
+            "type": "date",
+            "subtype": "Excavation Start Date",
+            "format": "year",
+            "displayName": "Excavation Start Date",
+            "description": "The start date of the feature excavation."
+        },
+        {
+            "name": "End_DATE",
+            "type": "date",
+            "subtype": "Excavation End Date",
+            "format": "year",
+            "displayName": "Excavation End Date",
+            "description": "The end date of the feature excavation."
+        },
+        {
+            "name": "EXCAVATOR",
+            "type": "text",
+            "subtype": "Excavator",
+            "format": "string",
+            "displayName": "Excavator",
+            "description": "The excavator of the feature."
+        },
+        {
+            "name": "BIBLIOGRAP",
+            "type": "text",
+            "subtype": "Note",
+            "format": "string",
+            "displayName": "Bibliography",
+            "description": "Bibliography for the feature."
+        },
+        {
+            "name": "FULL_TEXT",
+            "type": "text",
+            "subtype": "",
+            "format": "string",
+            "displayName": "Full Text",
+            "description": "The full text from the source of the annotation."
+        },
+        {
+            "name": "LINK",
+            "type": "link",
+            "subtype": "",
+            "format": "url",
+            "displayName": "Link to Source",
+            "description": "A link to the source."
+        },
+        {
+            "name": "IMAGES",
+            "type": "link",
+            "subtype": "Image",
+            "format": "url",
+            "displayName": "Image Link",
+            "description": "A link to an image of the feature."
+        },
+        {
+            "name": "ERRATA",
+            "type": "text",
+            "subtype": "Note",
+            "format": "string",
+            "displayName": "Notes",
+            "description": "Notes about the feature."
+        }
+
+    ]
+
+}

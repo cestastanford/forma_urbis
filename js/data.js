@@ -249,6 +249,7 @@
                 'feature-type': [],
                 uniqueID: [],
                 location: [],
+                link: [],
 
             };
 

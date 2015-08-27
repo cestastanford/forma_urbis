@@ -18,11 +18,14 @@
   </head>
 
   <body ng-controller="MyFirstController">
-    <div ng-repeat="feature in SearchResults.filteredActiveDatasets[0].data.features">
+
+    <div ng-repeat="dataset in SearchResults.filteredActiveDatasets">
+    <div ng-repeat="feature in dataset.data.features">
 
         <div>{{ feature }}</div>
         <hr>
 
+    </div>
     </div>
 
 

@@ -2,8 +2,7 @@
 
     "name": "nolli_points_golden",
     "type": "vector",
-    "url": "data/vector/nolli_points.geojson",
-
+    "url": "data/sources/geojson/nolli_points.geojson",
     "labelField": 0,
     "fields": [
 

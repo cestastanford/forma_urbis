@@ -43,7 +43,7 @@
         $q.all([Datasets.done, LayerHierarchy.done, Filters.done])
         .then(function() {
 
-            ModifySearch.setDatasets([Datasets.datasets.vector[0]])
+            ModifySearch.setDatasets(Datasets.datasets.vector)
             return ModifySearch.setFilters(['matching-case-insensitive-word-prefix'], [{ subtypes: ['Feature Name'], input: ['maria']}]);
 
         }).then(function() {

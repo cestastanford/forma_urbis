@@ -2,7 +2,7 @@
 
     "name": "nolli_map_raster",
     "type": "raster",
-    "url": "data/raster/nolli_map/{z}/{x}/{y}.png",
+    "url": "data/sources/tiles/nolli_map/{z}/{x}/{y}.png",
     "attribution": "Nolli Map",
     "tms": true
 
