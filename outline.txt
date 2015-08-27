@@ -86,6 +86,8 @@ Selection/Detail Controller
         Results List View : Unmark Old / Mark New as Detailed
         Detail View : Detail Feature
 
+    -> Focus on Detail (detail) ->
+
 
 Selection/Detail Model
 --------------

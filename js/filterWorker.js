@@ -42,7 +42,7 @@ var filter = function(dataset, activeFilters, activeFilterValues) {
     var fields = dataset.fields;
     var features = dataset.data.features;
 
-    return features.filter(function(feature) {
+    dataset.data.features = features.filter(function(feature) {
 
         for (var i = 0; i < activeFilters.length; i++) {
 
@@ -108,6 +108,8 @@ var filter = function(dataset, activeFilters, activeFilterValues) {
         return true;
 
     });
+
+    return dataset;
 
 }
 
