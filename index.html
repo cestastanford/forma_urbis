@@ -1,6 +1,6 @@
 <!-- Written by Cody M Leff for Forma Urbis Romae - Spatial History Lab - CESTA - Stanford University -->
 <!DOCTYPE html>
-<html lang="en" ng-app="fur">
+<html lang="en" ng-app="FormaUrbisRomae">
   <head>
     <!-- Important meta tags -->
     <meta charset="utf-8">
@@ -17,7 +17,9 @@
 
   </head>
 
-  <body>
+  <body ng-controller="MyFirstController">
+    <h3>{{ access }}</h3>
+
 
 
 
@@ -25,12 +27,13 @@
     <script type="text/javascript" src="js/lib/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
     <!--script type="text/javascript" src="js/lib/es6-promise.min.js"></script>-->
-    <script type="text/javascript" src="js/lib/angular.min.js"></script>
+    <script type="text/javascript" src="js/lib/angular.js"></script>
 
     <!-- Custom scripts -->
-    <script type="text/javascript" src="js/misc.js"></script>
-    <script type="text/javascript" src="js/data.js"></script>
-    <script type="text/javascript" src="js/search.js"></script>
+    <!--<script type="text/javascript" src="js/misc.js"></script>
+    --><script type="text/javascript" src="js/data.js"></script><!--
+    <script type="text/javascript" src="js/search.js"></script>-->
+    <script type="text/javascript" src="js/service.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
 
   </body>
