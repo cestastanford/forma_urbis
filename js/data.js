@@ -188,7 +188,7 @@
     *   Service that downloads the filter templates and creates any
     *   assets they might require.
     */
-    module.factory('FilterTemplates', ['$log', '$http', '$q', 'Datasets', function($log, $http, $q, Datasets) {
+    module.factory('Filters', ['$log', '$http', '$q', 'Datasets', function($log, $http, $q, Datasets) {
 
         var FILTER_TEMPLATES_URL = 'data/filters.json';
 
@@ -299,6 +299,7 @@
         exports.done = Datasets.done
         .then(function () { return $http.get(FILTER_TEMPLATES_URL); }) // downloads the filter templates
         .then(setupFilterTemplates); // gathers required data and publishes the filter templates
+
 
         /*
         *   Returns exports.

@@ -18,7 +18,12 @@
   </head>
 
   <body ng-controller="MyFirstController">
-    <h3>{{ access }}</h3>
+    <div ng-repeat="feature in SearchResults.filteredActiveDatasets[0].data.features">
+
+        <div>{{ feature }}</div>
+        <hr>
+
+    </div>
 
 
 
@@ -30,10 +35,8 @@
     <script type="text/javascript" src="js/lib/angular.js"></script>
 
     <!-- Custom scripts -->
-    <!--<script type="text/javascript" src="js/misc.js"></script>
-    --><script type="text/javascript" src="js/data.js"></script><!--
-    <script type="text/javascript" src="js/search.js"></script>-->
-    <script type="text/javascript" src="js/service.js"></script>
+    <script type="text/javascript" src="js/data.js"></script>
+    <script type="text/javascript" src="js/search.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
 
   </body>
