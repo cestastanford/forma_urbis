@@ -66,6 +66,24 @@
             return $q.all(promises);
         };
 
+        /*
+        *   Loops through every feature in every dataset, recording a reference
+        *   to its parent dataset.
+        */
+        var annotateFeatures = function() {
+
+            for (var i = 0; i < exports.datasets.vector.length; i++) {
+
+                var dataset = exports.datasets.vector[i];
+                var datasetName = dataset.name;
+                for (var j = 0; j < dataset.data.features.length; j++) {
+
+                    var feature = dataset.data.features[j];
+                    feature.datasetName = datasetName;
+                }
+            }
+        };
+
 
         /*
         *   Executes the asynchronous loading process.
@@ -83,7 +101,8 @@
 
             for (var i = 0; i < responses.length; i++) exports.datasets.vector[i].data = responses[i].data;
 
-        });
+        })
+        .then(annotateFeatures); // marks each feature with the dataset it comes from
 
 
         /*

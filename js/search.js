@@ -41,7 +41,7 @@
     *   Service that allows changes to the search parameters
     *   and updates the search results on parameter change.
     */
-    module.factory('ModifySearch', ['$log', '$http', '$q', 'SearchResults', 'Filters', function($log, $http, $q, SearchResults, Filters) {
+    module.factory('ModifySearch', ['$log', '$http', '$q', 'SearchResults', 'Filters', 'URLController', function($log, $http, $q, SearchResults, Filters, URLController) {
 
         /*
         *   Internal state variables.
@@ -95,7 +95,8 @@
 
         /*
         *   Sets the dataset list.  Used for initial setup to load several
-        *   datasets at once.  Must be followed by 'setFilters'.
+        *   datasets at once.  Must be followed by 'setFilters'; should only
+        *   be called by LayerListController at application load.
         *
         *   Parameters: an array of datasets
         */
@@ -113,6 +114,9 @@
         */
         exports.setFilters = function(filterNames, filterValues) {
             /* start progress indicator here */
+
+            //  update the URL
+//            URLController.setFilters(filterNames, filterValues);
 
             //  update the model
             activeFilters = filterNames.map(function(f) { return Filters.filterTemplates[f]; });

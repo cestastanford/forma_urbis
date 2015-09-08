@@ -12,6 +12,9 @@
     //  Instantiation of the main module.
     var module = angular.module('FormaUrbisRomae', ['Data', 'Search']);
 
+    //  Creation of the custom directives for the views.
+    module.
+
     module.controller('MyFirstController', [
     '$scope',
     '$log',
@@ -22,21 +25,8 @@
     'Filters',
     'SearchResults',
     'ModifySearch',
-    function($scope, $log, $q, $timeout, Datasets, LayerHierarchy, Filters, SearchResults, ModifySearch) {
-
-        // /*
-        // *   Prints to the console the status of the data model.
-        // */
-        // var consoleDataStatus = function() {
-
-        //     $log.log('Data Status');
-        //     $log.log('---------------------');
-        //     $log.log('Datasets: ' + Datasets.datasets.vector.length + ' vector and ' + Datasets.datasets.raster.length + ' raster loaded.  ', Datasets.datasets);
-        //     $log.log('Layer Hierarchy: ' + LayerHierarchy.layerHierarchy.length + ' top-level entries.  ', LayerHierarchy.layerHierarchy);
-        //     $log.log('Filter Templates: loaded.  ', Filters.filterTemplates);
-        //     $log.log('Filter Assets: ', Filters.filterAssets);
-
-        // };
+    'URLController',
+    function($scope, $log, $q, $timeout, Datasets, LayerHierarchy, Filters, SearchResults, ModifySearch, URLController) {
 
         $scope.SearchResults = SearchResults;
 
@@ -52,7 +42,21 @@
 
         });
 
+        $scope.getClickedFeature = function() {
+
+            $log.log(this.feature);
+
+        }
+
+        URLController.addLayer('fuckyeah');
+        URLController.addLayer('anotherone');
+        URLController.addLayer('tobedeleted');
+        URLController.removeLayer('tobedeleted');
+        URLController.setFilters(['matching-case-insensitive-word-prefix'], [{ subtypes: ['Feature Name', 'Excavator', 'Architect', 'Note'], input: ['maria']}]);
+        URLController.setMapBounds([[123, 45532], [435, 2111]]);
+
     }]);
+
 
 })();
 

@@ -86,7 +86,9 @@ Selection/Detail Controller
         Results List View : Unmark Old / Mark New as Detailed
         Detail View : Detail Feature
 
-    -> Focus on Detail (detail) ->
+    -> Focus Feature (vector feature) ->
+        Map View : Pan and Zoom to feature
+        Results List View : Scroll to feature
 
 
 Selection/Detail Model

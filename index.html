@@ -17,19 +17,21 @@
 
   </head>
 
-  <body ng-controller="MyFirstController">
+  <body>
 
-    <div ng-repeat="dataset in SearchResults.filteredActiveDatasets">
-    <div ng-repeat="feature in dataset.data.features">
+    <div id="container">
 
-        <div>{{ feature }}</div>
-        <hr>
+        <layer-list></layer-list>
+
+        <map></map>
+
+        <feature-details></feature-details>
+
+        <filter-list></filter-list>
+
+        <result-list></result-list>
 
     </div>
-    </div>
-
-
-
 
     <!-- Library scripts (jQuery, Bootstrap, Promise) -->
     <script type="text/javascript" src="js/lib/jquery-2.1.4.min.js"></script>
@@ -40,6 +42,7 @@
     <!-- Custom scripts -->
     <script type="text/javascript" src="js/data.js"></script>
     <script type="text/javascript" src="js/search.js"></script>
+    <script type="text/javascript" src="js/url.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
 
   </body>
