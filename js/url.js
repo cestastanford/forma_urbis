@@ -1,3 +1,16 @@
+// ------------------------------------------------------------------------- //
+// ------------------------------------------------------------------------- //
+// -- url.js (JavaScript) -------------------------------------------------- //
+// -- written by Cody M Leff (codymleff@gmail.com) ------------------------- //
+// -- for Forma Urbis Romae at CESTA - Spatial History Lab ----------------- //
+// ------------------------------------------------------------------------- //
+// ------------------------------------------------------------------------- //
+
+/*
+*   This script creates the service that reads from and updates the URL bar
+*   to enable loading and saving application states.
+*/
+
 (function() {
 
     var module = angular.module('Search');
@@ -7,12 +20,7 @@
     *   those search conditions.  The controller also updates the URL with
     *   a string representing the current application state.
     */
-    module.factory('URLController', [
-    '$log',
-    '$location',
-    'LayerHierarchy',
-    'Filters',
-    function($log, $location, LayerHierarchy, Filters) {
+    module.factory('URLController', function($log, $location, LayerHierarchy, Filters) {
 
 
         /*
@@ -35,7 +43,7 @@
         /*
         *   Checks that all layers and filters in the search actually exist.
         */
-        var verifySearch = function(search) {
+        function verifySearch(search) {
 
             var initialSearch = { layers: [], filters: [], mapBounds: [], filterValues: [] };
 
@@ -80,7 +88,7 @@
             initialSearch = verifySearch($location.search());
 
             if (initialSearch) {
-                $log.log(initialSearch);
+                $log.log('initial search: ', initialSearch);
 
             //    LayerListController.setLayers(initialSearch.layers);
             //    FilterListController.setFilters(initialSearch.filters, initialSearch.filterValues);
@@ -93,7 +101,7 @@
         /*
         *   Sets the URL.
         */
-        var setURL = function() {
+        function setURL() {
 
             var search = encodedFilterValues;
             search.layers = layers;
@@ -162,6 +170,6 @@
 
 
         return exports;
-    }]);
+    });
 
 })();

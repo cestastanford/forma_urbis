@@ -24,7 +24,7 @@
     /*
     *   Service that stores the search results.
     */
-    module.factory('SearchResults', ['$log', '$http', '$q', function($log, $http, $q) {
+    module.factory('SearchResults', function($log, $http, $q) {
 
         var exports = {
 
@@ -34,14 +34,14 @@
 
         return exports;
 
-    }]);
+    });
 
 
     /*
     *   Service that allows changes to the search parameters
     *   and updates the search results on parameter change.
     */
-    module.factory('ModifySearch', ['$log', '$http', '$q', 'SearchResults', 'Filters', 'URLController', function($log, $http, $q, SearchResults, Filters, URLController) {
+    module.factory('ModifySearch', function($log, $http, $q, SearchResults, Filters, URLController) {
 
         /*
         *   Internal state variables.
@@ -54,6 +54,7 @@
         *   Exports object
         */
         var exports = {};
+
 
         /*
         *   Adds a source dataset to the search.
@@ -139,7 +140,7 @@
         *   Spawns a WebWorker to filter the given layer by the active
         *   filters, returning a promise to finish filtering the layer.
         */
-        var filterDataset = function(dataset) {
+        function filterDataset(dataset) {
             /* start progress indicator here */
 
             return $q(function(resolve, reject) {
@@ -174,6 +175,6 @@
 
         return exports;
 
-    }]);
+    });
 
 })();

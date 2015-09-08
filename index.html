@@ -17,26 +17,29 @@
 
   </head>
 
-  <body>
+  <body ng-controller="Setup">
 
-    <div id="container">
+    <div id="content-wrapper">
 
-        <layer-list></layer-list>
+        <div ng-repeat="(name, state) in setupProgress">
+            <span>{{ name }}: {{ state.status ? 'done!' : 'still working...' }}</span>
+        </div>
+
+        <layers></layers>
+
+        <filters></filters>
 
         <map></map>
 
+        <feature-results></feature-results>
+
         <feature-details></feature-details>
-
-        <filter-list></filter-list>
-
-        <result-list></result-list>
 
     </div>
 
     <!-- Library scripts (jQuery, Bootstrap, Promise) -->
     <script type="text/javascript" src="js/lib/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
-    <!--script type="text/javascript" src="js/lib/es6-promise.min.js"></script>-->
     <script type="text/javascript" src="js/lib/angular.js"></script>
 
     <!-- Custom scripts -->
@@ -44,6 +47,7 @@
     <script type="text/javascript" src="js/search.js"></script>
     <script type="text/javascript" src="js/url.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/layerList.js"></script>
 
   </body>
 </html>
