@@ -11,7 +11,7 @@
 
     var module = angular.module('FormaUrbisRomae', ['Data', 'Search']);
 
-    module.controller('Setup', function($scope, $log, $q, $timeout, Datasets, LayerHierarchy, Filters, SearchResults, ModifySearch, URLController) {
+    module.controller('SetupController', function($scope, $q, Datasets, LayerHierarchy, Filters) {
 
         //  object noting the status of each setup item.
         $scope.setupProgress = {

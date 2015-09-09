@@ -1,0 +1,11 @@
+<span class="title">Layers</span>
+<hr>
+<ul>
+    <li ng-repeat="item in list" style="padding-left: {{ (item.depth * 5) + 'px;' }}">
+        <input type="checkbox" name="{{ item.name }}" ng-model="item.checked" ng-change="boxClicked(item)">
+        <span class="layer-name">{{ item.name }}</span>
+        <span class="layer-icon" ng-show="item.type === 'group'">▽</span>
+        <span class="layer-icon" ng-show="item.type === 'raster'">ⓡ</span>
+        <span class="layer-icon" style="color: {{ item.color }};" ng-show="item.type === 'vector'">ⓥ</span>
+    </li>
+</ul>

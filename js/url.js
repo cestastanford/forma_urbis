@@ -13,7 +13,7 @@
 
 (function() {
 
-    var module = angular.module('Search');
+    var module = angular.module('FormaUrbisRomae');
 
     /*  Controller for the URL bar.  If the URL contains meaningful
     *   data on application launch the controller attempts to recreate
