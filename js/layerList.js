@@ -20,7 +20,7 @@
     *   Controller for the layer list view.  Deals with synchronizing the
     *   checkboxes and sending any updates to the search model.
     */
-    module.controller('LayerListController', function($scope, LayerHierarchy) {
+    module.controller('LayerListController', function($scope, $q, LayerHierarchy, ModifySearch) {
 
         $scope.list = [];
 
@@ -32,11 +32,12 @@
 
 
         /*  Recursively generates a single-depth list of layers
-        *   for the view to display.
+        *   for the view to display.  Note: the viewLayer object is different
+        *   from the layer object, and is used only internally by the view.
         */
-        function addSublayers(children, ancestors, depth) {
+        function addSublayers(children, ancestorViewLayers, depth) {
 
-            var descendants = [];
+            var descendantViewLayers = [];
 
             for (var i = 0; i < children.length; i++) {
 
@@ -46,7 +47,7 @@
 
                     depth: depth,
                     name: child.name,
-                    ancestors: ancestors,
+                    ancestorViewLayers: ancestorViewLayers,
                     checked: false,
 
                 };
@@ -56,70 +57,126 @@
                 if (child.role === 'layer') {
 
                     item.type = child.source.type;
-                    item.descendants = [];
+                    item.source = child.source;
+                    item.descendantViewLayers = [];
 
-                    descendants.push(item);
+                    descendantViewLayers.push(item);
 
                 } else {
 
                     item.type = 'group';
 
-                    var updatedAncestors = ancestors.slice()
+                    var updatedAncestors = ancestorViewLayers.slice()
                     updatedAncestors.push(item);
 
-                    item.descendants = addSublayers(child.children, updatedAncestors, depth + 1);
+                    item.descendantViewLayers = addSublayers(child.children, updatedAncestors, depth + 1);
 
-                    Array.prototype.push.apply(descendants, item.descendants);
-                    descendants.push(item);
+                    Array.prototype.push.apply(descendantViewLayers, item.descendantViewLayers);
+                    descendantViewLayers.push(item);
                 }
             }
 
-            return descendants;
+            return descendantViewLayers;
 
         };
 
 
         /*
-        *   Receives clicks on the layer checkboxes, checks/unchecks any
-        *   boxes and updates the search model.
+        *   Makes sure all descendant and ancestor boxes that may be affected
+        *   are also checked, then sends resulting source dataset changes to
+        *   the view model.
         */
-        $scope.boxClicked = function(layer) {
+        $scope.updateLayers = function(viewLayer) {
 
+            var changedViewLayers = [];
 
-            //  update all descendants
-            for (var i = 0; i < layer.descendants.length; i++) {
+            changedViewLayers.push(viewLayer);
 
-                layer.descendants[i].checked = layer.checked;
+            //  update all descendants, too
+            for (var i = 0; i < viewLayer.descendantViewLayers.length; i++) {
+
+                var descendantViewLayer = viewLayer.descendantViewLayers[i];
+
+                if (descendantViewLayer.checked !== viewLayer.checked) {
+
+                    descendantViewLayer.checked = viewLayer.checked;
+                    changedViewLayers.push(descendantViewLayer);
+                }
             }
 
-            //  check all ancestors to see if any should be changed.
-            for (var i = layer.ancestors.length - 1; i > -1; i--) {
+            updateDatasets(changedViewLayers);
 
-                var ancestor = layer.ancestors[i];
-                var element = document.querySelector('input[type="checkbox"][name="' + ancestor.name + '"]');
+            //  check all ancestorLayers to see if any should be changed.
+            for (var i = viewLayer.ancestorViewLayers.length - 1; i > -1; i--) {
 
+                var ancestorLayer = viewLayer.ancestorViewLayers[i];
+                var element = document.querySelector('input[type="checkbox"][name="' + ancestorLayer.name + '"]');
 
                 //  if all descendants are checked, check the parent
-                if (ancestor.descendants.every(function(child) { return child.checked; })) {
+                if (ancestorLayer.descendantViewLayers.every(function(child) { return child.checked; })) {
 
                     element.indeterminate = false;
-                    ancestor.checked = true;
+                    ancestorLayer.checked = true;
 
                 //  if no descendants are checked, uncheck the parent
-                } else if (ancestor.descendants.every(function(child) { return !child.checked; })) {
+                } else if (ancestorLayer.descendantViewLayers.every(function(child) { return !child.checked; })) {
 
                     element.indeterminate = false;
-                    ancestor.checked = false;
+                    ancestorLayer.checked = false;
 
                 //  if some descendants are checked, intermediate-check the parent
                 } else {
 
                     element.indeterminate = true;
-                    ancestor.checked = false;
+                    ancestorLayer.checked = false;
 
                 }
             }
-        }
+        };
+
+
+        /*
+        *   Makes the updates to the search model and the map model.
+        */
+        function updateDatasets(changedViewLayers) {
+            console.log(changedViewLayers);
+            /*  begins the queue of chained asynchronous tasks for the vector
+            *   dataset changes.
+            */
+            var queue = $q.resolve();
+
+            //  processes each layer change according to its type
+            for (var i = 0; i < changedViewLayers.length; i++) {
+
+                var changedViewLayer = changedViewLayers[i];
+
+                //  sends raster layers to the map controller to add.
+                if (changedViewLayer.type === 'raster') {
+
+                    //  to mapcontroller
+                }
+
+                //  sends vector layers to the search controller to filter
+                if (changedViewLayer.type === 'vector') {
+
+                    if (changedViewLayer.checked) {
+                        console.log('layer checked: ', changedViewLayer);
+
+                        queue = queue.then(function() {
+
+                            return ModifySearch.addDataset(changedViewLayer.source);
+                        });
+
+                    } else {
+
+                        queue = queue.then(function() {
+
+                            ModifySearch.removeDataset(changedViewLayer.source);
+                        });
+                    }
+                }
+            }
+        };
     });
 
 
@@ -135,4 +192,4 @@
 
     });
 
-})()
+})();

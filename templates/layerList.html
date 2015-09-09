@@ -2,7 +2,7 @@
 <hr>
 <ul>
     <li ng-repeat="item in list" style="padding-left: {{ (item.depth * 5) + 'px;' }}">
-        <input type="checkbox" name="{{ item.name }}" ng-model="item.checked" ng-change="boxClicked(item)">
+        <input type="checkbox" name="{{ item.name }}" ng-model="item.checked" ng-change="updateLayers(item);">
         <span class="layer-name">{{ item.name }}</span>
         <span class="layer-icon" ng-show="item.type === 'group'">▽</span>
         <span class="layer-icon" ng-show="item.type === 'raster'">ⓡ</span>

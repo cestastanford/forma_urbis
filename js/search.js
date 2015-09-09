@@ -62,6 +62,7 @@
         *   Parameters: dataset object to be added
         */
         exports.addDataset = function(dataset) {
+            console.log(dataset, 'added to search')
             /* start progress indicator here */
 
             //  filter the new layer
@@ -71,6 +72,7 @@
                 //  update the model
                 activeDatasets.push(dataset);
                 SearchResults.filteredActiveDatasets.push(filteredDataset);
+                console.log('search results: ', SearchResults);
 
                 /* stop progress indicator here */
             });
