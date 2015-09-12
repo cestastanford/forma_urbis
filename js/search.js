@@ -118,7 +118,6 @@
         *   Parameters: array of filter names, array of filter values
         */
         exports.setFilters = function(incomingActiveFilters) {
-            console.log('filters set');
             /* start progress indicator here */
 
             //  update the model
@@ -131,7 +130,6 @@
                 //  this preserves index consistency because Promise.all
                 //  returns results in the same order as the promise array.
                 SearchResults.filteredActiveDatasets = filteredDatasets;
-                console.log('filtered datasets now available');
                 $rootScope.$emit('refresh');
 
                 /* stop progress indicator here */

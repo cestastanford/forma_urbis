@@ -149,8 +149,6 @@
         */
         $rootScope.$on('refresh', function() {
 
-            console.log('refresh event received');
-
             for (var i = 0; i < vectorLayersOnMap.length; i++) {
 
                 map.removeLayer(vectorLayersOnMap[i]);
@@ -161,18 +159,6 @@
 
         });
 
-
-        // /*
-        // *   Sets up a watch for changes to the vector layers, checking if they have
-        // *   been refiltered.
-        // */
-        // $scope.$watch('vector.filteredActiveDatasets', function(now, before) {
-
-        //     console.log('vector layers refiltered');
-        //     removeVectorLayers(before);
-        //     addVectorLayers(now);
-
-        // }, true);
 
         /*
         *   Adds a new raster layer to the Leaflet map.
@@ -249,30 +235,6 @@
             }
 
         };
-
-
-        /*
-        *   Removes a vector layer from the Leaflet map.
-        */
-        function removeVectorLayers(vectorLayersToRemove) {
-
-            for (var i = 0; i < vectorLayersToRemove.length; i++) {
-
-                var vectorLayerToRemove = vectorLayersToRemove[i];
-
-                //  gets a reference to the existing layer on the map
-                var vectorLayerOnMap = vectorLayersOnMap.filter(function(vectorLayerOnMap) {
-                    return vectorLayerToRemove.name === vectorLayerOnMap.name;
-                })[0];
-
-                map.removeLayer(vectorLayerOnMap.leafletLayer);
-                var index = vectorLayersOnMap.indexOf(vectorLayerOnMap);
-                vectorLayersOnMap.splice(index, 1);
-
-            }
-
-        };
-
 
     });
 
