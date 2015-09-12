@@ -19,7 +19,7 @@
     *   Controller for the layer list view.  Deals with synchronizing the
     *   checkboxes and sending any updates to the search model.
     */
-    module.controller('LayerListController', function($scope, $q, $timeout, LayerHierarchy, ModifySearch, URLController) {
+    module.controller('LayerListController', function($scope, $q, $timeout, LayerHierarchy, ModifySearch, URLController, MapRasterService) {
 
         var INITIAL_LAYERS = [];
 
@@ -98,9 +98,13 @@
 
                     var index = activeLayerNames.indexOf(layer.name);
                     if (index > -1) {
+
                         layer.checked = true;
-                        if (layer.type === 'vector') ModifySearch.addDatasetSync(layer.source);
                         updateAncestorLayers(layer);
+
+                        if (layer.type === 'vector') ModifySearch.addDatasetSync(layer.source);
+                        if (layer.type === 'raster') MapRasterService.activeRasterLayers.push(layer.source);
+
                     }
                 }
             }
@@ -167,7 +171,9 @@
                 //  sends raster layers to the map controller to add.
                 if (changedViewLayer.type === 'raster') {
 
-                    //  to mapcontroller
+                    if (changedViewLayer.checked) MapRasterService.addRasterLayer(changedViewLayer.source);
+                    else MapRasterService.removeRasterLayer(layer.source);
+
                 }
 
                 //  sends vector layers to the search controller to filter
@@ -185,6 +191,7 @@
                         queue = queue.then(function() {
 
                             ModifySearch.removeDataset(changedViewLayer.source);
+
                         });
                     }
                 }

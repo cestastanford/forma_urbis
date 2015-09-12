@@ -22,9 +22,10 @@
 
 
     /*
-    *   Service that stores the search results.
+    *   Service that stores the search results and pushes any updates to
+    *   listening modules.
     */
-    module.factory('SearchResults', function($log, $http, $q) {
+    module.factory('SearchResults', function() {
 
         var exports = {
 

@@ -65,6 +65,8 @@
 
             //  save map bounds
             mapBounds = search.mapBounds;
+            var decodedMapBounds = [[+mapBounds[0], +mapBounds[1]], [+mapBounds[2], +mapBounds[3]]]
+            console.log(decodedMapBounds);
             delete search.mapBounds;
 
             //  non-filter-value key/value pairs have been removed from the
@@ -79,9 +81,9 @@
 
             return {
 
-                    layers: layers,
-                    filtersPromise: filtersPromise,
-                    mapBounds: mapBounds,
+                layers: layers,
+                filtersPromise: filtersPromise,
+                mapBounds: decodedMapBounds,
 
             };
 
@@ -153,9 +155,11 @@
             var search = encodedFilters;
             search.layers = layers;
             search.mapBounds = mapBounds;
+            console.log(search.mapBounds);
 
             $location.path('/search');
             $location.search(search);
+
         };
 
 
@@ -215,10 +219,17 @@
         /*
         *   Sets the map bounds in the URL bar.
         */
-        exports.setMapBounds = function(mapBoundsArray) {
+        exports.setMapBounds = function(mapBoundsObject) {
 
-            mapBounds = mapBoundsArray;
+            mapBounds = [
+                '' + mapBoundsObject._northEast.lat,
+                '' + mapBoundsObject._northEast.lng,
+                '' + mapBoundsObject._southWest.lat,
+                '' + mapBoundsObject._southWest.lng
+            ];
+
             setURL();
+
         };
 
 

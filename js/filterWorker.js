@@ -21,11 +21,9 @@ addEventListener('message', function(event) {
     var dataset = event.data.dataset;
     if (!dataset) console_log('no dataset sent to filter!');
     var activeFilters = event.data.activeFilters;
-    console_log('hey, its me from the back...');
 
     var filteredDataset = filter(dataset, activeFilters);
 
-    console_log('finished filtering');
     postMessage(filteredDataset);
     close();
 
@@ -155,8 +153,8 @@ var functions = {
 
     "matching-case-insensitive-substring": function(data, input) {
 
-        var lowerCaseInput = input[0].toLowerCase();
-        var lowerCaseData = data[0].toLowerCase();
+        var lowerCaseInput = ('' + input[0]).toLowerCase();
+        var lowerCaseData = ('' + data[0]).toLowerCase();
 
         return lowerCaseData.indexOf(lowerCaseInput) > -1;
 
@@ -164,8 +162,8 @@ var functions = {
 
     "keyword": function(data, input) {
 
-        var lowerCaseInput = input[0].toLowerCase();
-        var lowerCaseData = data[0].toLowerCase();
+        var lowerCaseInput = ('' + input[0]).toLowerCase();
+        var lowerCaseData = ('' + data[0]).toLowerCase();
 
         return lowerCaseData.indexOf(lowerCaseInput) > -1;
 
