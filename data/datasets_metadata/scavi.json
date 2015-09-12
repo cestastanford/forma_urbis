@@ -4,6 +4,7 @@
     "type": "vector",
     "url": "data/sources/geojson/scavi_points.geojson",
     "labelField": 0,
+    "color": "#f4f",
     "fields": [
 
         {

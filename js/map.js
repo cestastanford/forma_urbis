@@ -85,7 +85,7 @@
         /*
         *   Point marker style.
         */
-        var MARKER_OPTIONS = {
+        var MARKER_STYLE = {
 
             radius: 4,
             weight: 1,
@@ -100,8 +100,8 @@
         */
         var POLYGON_STYLE = {
 
-            "weight": 1,
-            "opacity": 0.6,
+            weight: 1,
+            opacity: 0.6,
 
         };
 
@@ -160,7 +160,7 @@
 
             };
 
-            addVectorLayers(SearchResults.filteredActiveDatasets);
+            createVectorLayers(SearchResults.filteredActiveDatasets);
 
         });
 
@@ -175,14 +175,18 @@
                 var rasterLayerToAdd = rasterLayersToAdd[i];
 
                 var newRasterLayer = L.tileLayer(rasterLayerToAdd.url, {
+
                     tms: rasterLayerToAdd.tms,
                     attribution: rasterLayerToAdd.attribution,
+
                 });
 
                 map.addLayer(newRasterLayer);
                 rasterLayersOnMap.push({
+
                     name: rasterLayerToAdd.name,
                     leafletLayer: newRasterLayer,
+
                 });
 
             }
@@ -214,26 +218,26 @@
         /*
         *   Adds a vector layers to the Leaflet map.
         */
-        function addVectorLayers(vectorLayersToAdd) {
+        function createVectorLayers(vectorDatasetsToAdd) {
 
-            for (var i = 0; i < vectorLayersToAdd.length; i++) {
+            for (var i = 0; i < vectorDatasetsToAdd.length; i++) {
 
-                var vectorLayerToAdd = vectorLayersToAdd[i];
+                var vectorDatasetToAdd = vectorDatasetsToAdd[i];
 
-                var newVectorLayer = L.geoJson(vectorLayerToAdd.data, {
+                var newVectorLayer = L.geoJson(vectorDatasetToAdd.data, {
 
                     pointToLayer: function (feature, latlng) {
-
-                        return L.circleMarker(latlng, MARKER_OPTIONS);
+                        if (!window.hey) { console.log(vectorDatasetToAdd); window.hey = {}; }
+                        return L.circleMarker(latlng, $.extend({}, MARKER_STYLE, {color: vectorDatasetToAdd.color}));
 
                     },
 
-                    style: $.extend({}, POLYGON_STYLE, {color: vectorLayerToAdd.color}),
+                    style: $.extend({}, POLYGON_STYLE, {color: vectorDatasetToAdd.color}),
 
                 });
 
                 map.addLayer(newVectorLayer);
-                if (vectorLayerToAdd.data.totalFeatures && vectorLayerToAdd.data.features[0].geometry.type !== 'Point') newVectorLayer.bringToBack();
+                if (vectorDatasetToAdd.data.totalFeatures && vectorDatasetToAdd.data.features[0].geometry.type !== 'Point') newVectorLayer.bringToBack();
 
                 vectorLayersOnMap.push(newVectorLayer);
 
