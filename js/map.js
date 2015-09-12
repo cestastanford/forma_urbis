@@ -110,11 +110,16 @@
         *   Sets up the Leaflet map on the page.
         */
         var map = L.map('map', MAP_OPTIONS);
-        if (URLController.initialSearch && URLController.initialSearch.mapBounds) {
 
-            map.fitBounds(URLController.initialSearch.mapBounds);
+        URLController.done.then(function() {
 
-        };
+            if (URLController.initialSearch && URLController.initialSearch.mapBounds) {
+
+                map.fitBounds(URLController.initialSearch.mapBounds);
+
+            };
+
+        })
 
 
         /*

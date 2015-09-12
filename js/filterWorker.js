@@ -22,9 +22,7 @@ addEventListener('message', function(event) {
     if (!dataset) console_log('no dataset sent to filter!');
     var activeFilters = event.data.activeFilters;
 
-    console_log('started filtering');
     var filteredDataset = filter(dataset, activeFilters);
-    console_log('finished filtering');
 
     postMessage(filteredDataset);
     close();
