@@ -23,6 +23,14 @@
         },
 
         {
+
+            "name": "Lanciani",
+            "role": "layer",
+            "source": "scavi_points"
+
+        },
+
+        {
             "name": "Open Street Map",
             "role": "layer",
             "source": "osm"

@@ -17,21 +17,15 @@
 
   </head>
 
-  <body ng-controller="SetupController">
+  <body ng-controller="TestController">
 
     <div id="content-wrapper">
-
-        <div ng-repeat="(name, state) in setupProgress">
-            <span>{{ name }}: {{ state.status ? 'done!' : 'still working...' }}</span>
-        </div>
-
-        <hr>
 
         <layers ng-controller="LayerListController"></layers>
 
         <hr>
 
-        <filters></filters>
+        <filters ng-controller="FilterListController"></filters>
 
         <hr>
 
@@ -49,6 +43,8 @@
 
     </div>
 
+    <div ng-repeat="dataset in searchResults.filteredActiveDatasets">{{ dataset.data }}</div>
+
     <!-- Library scripts (jQuery, Bootstrap, Promise) -->
     <script type="text/javascript" src="js/lib/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
@@ -60,6 +56,7 @@
     <script type="text/javascript" src="js/main.js"></script>
     <script type="text/javascript" src="js/url.js"></script>
     <script type="text/javascript" src="js/layerList.js"></script>
+    <script type="text/javascript" src="js/filters.js"></script>
 
   </body>
 </html>

@@ -1,0 +1,16 @@
+<div class="title">Filters</div>
+<select ng-model="selectedTemplate">
+    <option ng-repeat="template in Filters.filterTemplates" value="{{ template.name }}">{{ template.displayName }}</option>
+</select>
+
+<span ng-click="addFilter(selectedTemplate)">Add Filter</span>
+
+<div ng-repeat="filter in activeFilters">
+    <div>{{ filter }}</div>
+    <filter template="{{ filter.template.name }}"></filter>
+    <span ng-repeat="subtype in Filters.filterAssets.subtypes[filter.template.applicableType]">
+        <input type="checkbox" ng-model="filter.subtypes[subtype]" ng-init="filter.subtypes[subtype] = true; ">
+        <span>{{ subtype ? subtype : 'other' }}</span>
+    </span>
+    <div ng-click="removeFilter($index)">Remove Filter</div>
+</div>

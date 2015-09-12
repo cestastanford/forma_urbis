@@ -65,7 +65,7 @@
         {
             "name": "FULL_TEXT",
             "type": "text",
-            "subtype": "",
+            "subtype": "other",
             "format": "string",
             "displayName": "Full Text",
             "description": "The full text from the source of the annotation."
@@ -73,7 +73,7 @@
         {
             "name": "LINK",
             "type": "link",
-            "subtype": "",
+            "subtype": "other",
             "format": "url",
             "displayName": "Link to Source",
             "description": "A link to the source."
@@ -94,7 +94,5 @@
             "displayName": "Notes",
             "description": "Notes about the feature."
         }
-
     ]
-
 }

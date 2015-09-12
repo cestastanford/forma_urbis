@@ -1,5 +1,4 @@
-<span class="title">Layers</span>
-<hr>
+<div class="title">Layers</div>
 <ul>
     <li ng-repeat="item in list" style="padding-left: {{ (item.depth * 5) + 'px;' }}">
         <input type="checkbox" name="{{ item.name }}" ng-model="item.checked" ng-change="updateLayers(item);">

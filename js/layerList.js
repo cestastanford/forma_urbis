@@ -1,32 +1,34 @@
 // ------------------------------------------------------------------------- //
 // ------------------------------------------------------------------------- //
-// -- layerList.js (JavaScript) ---------------------------------- //
+// -- layerList.js (JavaScript) -------------------------------------------- //
 // -- written by Cody M Leff (codymleff@gmail.com) ------------------------- //
 // -- for Forma Urbis Romae at CESTA - Spatial History Lab ----------------- //
 // ------------------------------------------------------------------------- //
 // ------------------------------------------------------------------------- //
 
 /*
-*   This script creates registers a controller and directive with the main
-*   module for the layer list view.
+*   This script registers a controller and directive with the main module for
+*   the layer list view.
 */
 
 (function() {
 
     var module = angular.module('FormaUrbisRomae');
 
-
     /*
     *   Controller for the layer list view.  Deals with synchronizing the
     *   checkboxes and sending any updates to the search model.
     */
-    module.controller('LayerListController', function($scope, $q, LayerHierarchy, ModifySearch) {
+    module.controller('LayerListController', function($scope, $q, $timeout, LayerHierarchy, ModifySearch, URLController) {
+
+        var INITIAL_LAYERS = [];
 
         $scope.list = [];
 
         LayerHierarchy.done.then(function() {
 
-            addSublayers(LayerHierarchy.layerHierarchy, [], 0);
+            listSublayers(LayerHierarchy.layerHierarchy, [], 0);
+            $timeout(setInitialLayers, 0);
 
         });
 
@@ -35,7 +37,7 @@
         *   for the view to display.  Note: the viewLayer object is different
         *   from the layer object, and is used only internally by the view.
         */
-        function addSublayers(children, ancestorViewLayers, depth) {
+        function listSublayers(children, ancestorViewLayers, depth) {
 
             var descendantViewLayers = [];
 
@@ -69,7 +71,7 @@
                     var updatedAncestors = ancestorViewLayers.slice()
                     updatedAncestors.push(item);
 
-                    item.descendantViewLayers = addSublayers(child.children, updatedAncestors, depth + 1);
+                    item.descendantViewLayers = listSublayers(child.children, updatedAncestors, depth + 1);
 
                     Array.prototype.push.apply(descendantViewLayers, item.descendantViewLayers);
                     descendantViewLayers.push(item);
@@ -78,6 +80,30 @@
 
             return descendantViewLayers;
 
+        };
+
+
+        /*
+        *   Sets the initial layers selected, either from the URL if available,
+        *   or from the default set.
+        */
+        function setInitialLayers() {
+
+            if (URLController.initialSearch) {
+
+                activeLayerNames = URLController.initialSearch.layers;
+
+                for (var i = 0; i < $scope.list.length; i++) {
+                    var layer = $scope.list[i];
+
+                    var index = activeLayerNames.indexOf(layer.name);
+                    if (index > -1) {
+                        layer.checked = true;
+                        if (layer.type === 'vector') ModifySearch.addDatasetSync(layer.source);
+                        updateAncestorLayers(layer);
+                    }
+                }
+            }
         };
 
 
@@ -106,10 +132,75 @@
 
             updateDatasets(changedViewLayers);
 
+            updateAncestorLayers(viewLayer);
+
+            //  update the URL bar
+            var activeLayerNames = [];
+
+            for (var i = 0; i < $scope.list.length; i++) {
+
+                var layer = $scope.list[i];
+                if (layer.checked) activeLayerNames.push(layer.name);
+
+            };
+
+            URLController.setLayers(activeLayerNames);
+
+        };
+
+
+        /*
+        *   Makes the updates to the search model and the map model.
+        */
+        function updateDatasets(changedViewLayers) {
+
+            /*  begins the queue of chained asynchronous tasks for the vector
+            *   dataset changes.
+            */
+            var queue = $q.resolve();
+
+            //  processes each layer change according to its type
+            for (var i = 0; i < changedViewLayers.length; i++) {
+
+                var changedViewLayer = changedViewLayers[i];
+
+                //  sends raster layers to the map controller to add.
+                if (changedViewLayer.type === 'raster') {
+
+                    //  to mapcontroller
+                }
+
+                //  sends vector layers to the search controller to filter
+                if (changedViewLayer.type === 'vector') {
+
+                    if (changedViewLayer.checked) {
+
+                        queue = queue.then(function() {
+
+                            return ModifySearch.addDataset(changedViewLayer.source);
+                        });
+
+                    } else {
+
+                        queue = queue.then(function() {
+
+                            ModifySearch.removeDataset(changedViewLayer.source);
+                        });
+                    }
+                }
+            }
+        };
+
+        /*
+        *   Checks all ancestor layers to see if they need to be updated based
+        *   on changes to their children.
+        */
+        function updateAncestorLayers(viewLayer) {
             //  check all ancestorLayers to see if any should be changed.
             for (var i = viewLayer.ancestorViewLayers.length - 1; i > -1; i--) {
 
                 var ancestorLayer = viewLayer.ancestorViewLayers[i];
+                var string = 'input[type="checkbox"][name="' + ancestorLayer.name + '"]';
                 var element = document.querySelector('input[type="checkbox"][name="' + ancestorLayer.name + '"]');
 
                 //  if all descendants are checked, check the parent
@@ -134,49 +225,6 @@
             }
         };
 
-
-        /*
-        *   Makes the updates to the search model and the map model.
-        */
-        function updateDatasets(changedViewLayers) {
-            console.log(changedViewLayers);
-            /*  begins the queue of chained asynchronous tasks for the vector
-            *   dataset changes.
-            */
-            var queue = $q.resolve();
-
-            //  processes each layer change according to its type
-            for (var i = 0; i < changedViewLayers.length; i++) {
-
-                var changedViewLayer = changedViewLayers[i];
-
-                //  sends raster layers to the map controller to add.
-                if (changedViewLayer.type === 'raster') {
-
-                    //  to mapcontroller
-                }
-
-                //  sends vector layers to the search controller to filter
-                if (changedViewLayer.type === 'vector') {
-
-                    if (changedViewLayer.checked) {
-                        console.log('layer checked: ', changedViewLayer);
-
-                        queue = queue.then(function() {
-
-                            return ModifySearch.addDataset(changedViewLayer.source);
-                        });
-
-                    } else {
-
-                        queue = queue.then(function() {
-
-                            ModifySearch.removeDataset(changedViewLayer.source);
-                        });
-                    }
-                }
-            }
-        };
     });
 
 

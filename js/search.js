@@ -41,7 +41,7 @@
     *   Service that allows changes to the search parameters
     *   and updates the search results on parameter change.
     */
-    module.factory('ModifySearch', function($log, $http, $q, SearchResults, Filters, URLController) {
+    module.factory('ModifySearch', function($log, $http, $q, SearchResults, Filters) {
 
         /*
         *   Internal state variables.
@@ -62,7 +62,7 @@
         *   Parameters: dataset object to be added
         */
         exports.addDataset = function(dataset) {
-            console.log(dataset, 'added to search')
+
             /* start progress indicator here */
 
             //  filter the new layer
@@ -72,10 +72,23 @@
                 //  update the model
                 activeDatasets.push(dataset);
                 SearchResults.filteredActiveDatasets.push(filteredDataset);
-                console.log('search results: ', SearchResults);
 
                 /* stop progress indicator here */
             });
+        };
+
+
+        /*
+        *   Adds a source dataset to the search without filtering.  Only for
+        *   initial loading when no filters are applied.
+        *
+        *   Parameters: dataset object to be added
+        */
+        exports.addDatasetSync = function(dataset) {
+
+            activeDatasets.push(dataset);
+            SearchResults.filteredActiveDatasets.push(dataset);
+
         };
 
 
@@ -97,33 +110,16 @@
 
 
         /*
-        *   Sets the dataset list.  Used for initial setup to load several
-        *   datasets at once.  Must be followed by 'setFilters'; should only
-        *   be called by LayerListController at application load.
-        *
-        *   Parameters: an array of datasets
-        */
-        exports.setDatasets = function(datasets) {
-
-            //  set all datasets
-            activeDatasets = datasets;
-        };
-
-
-        /*
         *   Applies new filters to the search.
         *
         *   Parameters: array of filter names, array of filter values
         */
-        exports.setFilters = function(filterNames, filterValues) {
+        exports.setFilters = function(incomingActiveFilters) {
+
             /* start progress indicator here */
 
-            //  update the URL
-//            URLController.setFilters(filterNames, filterValues);
-
             //  update the model
-            activeFilters = filterNames.map(function(f) { return Filters.filterTemplates[f]; });
-            activeFilterValues = filterValues;
+            activeFilters = incomingActiveFilters;
 
             //  filter the new datasets
             var promises = activeDatasets.map(function(ds) { return filterDataset(ds); });
@@ -163,9 +159,10 @@
                     });
 
                     worker.postMessage({
+
                         dataset: dataset,
                         activeFilters: activeFilters,
-                        activeFilterValues: activeFilterValues
+
                     });
 
                 } else resolve(dataset); /* stop progress indicator here */
@@ -173,7 +170,6 @@
             });
 
         };
-
 
         return exports;
 

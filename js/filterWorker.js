@@ -19,12 +19,13 @@
 addEventListener('message', function(event) {
 
     var dataset = event.data.dataset;
+    if (!dataset) console_log('no dataset sent to filter!');
     var activeFilters = event.data.activeFilters;
-    var activeFilterValues = event.data.activeFilterValues;
-    console_log('hey, its me from the back');
+    console_log('hey, its me from the back...');
 
-    var filteredDataset = filter(dataset, activeFilters, activeFilterValues);
+    var filteredDataset = filter(dataset, activeFilters);
 
+    console_log('finished filtering');
     postMessage(filteredDataset);
     close();
 
@@ -37,7 +38,7 @@ addEventListener('message', function(event) {
 *   the same index.  Each object contains a subtypes array with the selected
 *   subtypes and an input array with the values from the input fields.
 */
-var filter = function(dataset, activeFilters, activeFilterValues) {
+var filter = function(dataset, activeFilters) {
 
     var fields = dataset.fields;
     var features = dataset.data.features;
@@ -46,22 +47,20 @@ var filter = function(dataset, activeFilters, activeFilterValues) {
 
         for (var i = 0; i < activeFilters.length; i++) {
 
-            var filter = activeFilters[i];
-            var input = activeFilterValues[i].input;
-            var subtypes = activeFilterValues[i].subtypes;
+            var template = activeFilters[i].template;
+            var input = activeFilters[i].values;
+            var subtypes = activeFilters[i].subtypes;
 
             /*
             *   Get the list of fields that the filter applies to.
             */
             var applicableFields = fields;
 
-            if (filter['applicable-type'] !== null) {
+            if (template.applicableType !== null) {
 
                 applicableFields = fields.filter(function(field) {
-                    if (filter['applicable-type'] === field.type) {
-                        if (subtypes.indexOf(field.subtype) > -1) {
-                            return true;
-                        }
+                    if (template.applicableType === field.type) {
+                        return subtypes[field.subtype];
                     }
                     return false;
                 });
@@ -70,10 +69,10 @@ var filter = function(dataset, activeFilters, activeFilterValues) {
             /*
             *   Convert the input to the default format.
             */
-            var inputFormat = filter['ui-input-format'];
-            if (inputFormat !== filter['function-input-format']) {
+            var inputFormat = template.uiInputFormat;
+            if (inputFormat !== template.functionInputFormat) {
 
-                input = conversions[filter['applicable-type']][inputFormat](input);
+                input = conversions[template.applicableType][inputFormat](input);
             }
 
             /*
@@ -85,12 +84,12 @@ var filter = function(dataset, activeFilters, activeFilterValues) {
 
                 if (data[0]) {
 
-                    if (filter['applicable-type'] && field.format !== filter['function-input-format']) {
+                    if (template.applicableType && field.format !== template.functionInputFormat) {
 
-                        data = [conversions[filter['applicable-type']][field.format](data)];
+                        data = [conversions[template.applicableType][field.format](data)];
                     }
 
-                    if (data[0]) return functions[filter.name](data, input);
+                    if (data[0]) return functions[template.name](data, input);
                 }
 
                 return false;

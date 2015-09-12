@@ -4,37 +4,42 @@
 
         "matching-case-insensitive-word-prefix": {
             "name": "matching-case-insensitive-word-prefix",
-            "applicable-type": "text",
-            "function-input-format": "string",
-            "ui-input-format": "string"
+            "displayName": "Text",
+            "applicableType": "text",
+            "functionInputFormat": "string",
+            "uiInputFormat": "string"
         },
 
         "overlapping-date-range": {
             "name": "overlapping-date-range",
-            "applicable-type": "date",
-            "function-input-format": "integer, integer",
-            "ui-input-format": "string, string"
+            "displayName": "Date",
+            "applicableType": "date",
+            "functionInputFormat": "integer, integer",
+            "uiInputFormat": "string, string"
         },
 
         "matching-type": {
             "name": "matching-type",
-            "applicable-type": "feature-type",
-            "function-input-format": "string",
-            "ui-input-format": "string"
+            "displayName": "Type",
+            "applicableType": "feature-type",
+            "functionInputFormat": "string",
+            "uiInputFormat": "string"
         },
 
         "matching-case-insensitive-substring": {
             "name": "matching-case-insensitive-substring",
-            "applicable-type": "uniqueID",
-            "function-input-format": "string",
-            "ui-input-format": "string"
+            "displayName": "Unique ID",
+            "applicableType": "uniqueID",
+            "functionInputFormat": "string",
+            "uiInputFormat": "string"
         },
 
         "keyword": {
             "name": "keyword",
-            "applicable-type": null,
-            "function-input-format": "string",
-            "ui-input-format": "string"
+            "displayName": "Keyword",
+            "applicableType": null,
+            "functionInputFormat": "string",
+            "uiInputFormat": "string"
         }
     }
 }

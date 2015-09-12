@@ -28,56 +28,17 @@
         */
         var exports = {};
 
+        /*
+        *   Holds the promise from the initial filtering.
+        */
+        exports.done = null;
 
         /*
-        *   Internal state variable.
+        *   Saved state.
         */
-        var initialSearch = null;
-
         var layers = [];
-        var filters = [];
+        var encodedFilters = {};
         var mapBounds = [];
-        var encodedFilterValues = {};
-
-
-        /*
-        *   Checks that all layers and filters in the search actually exist.
-        */
-        function verifySearch(search) {
-
-            var initialSearch = { layers: [], filters: [], mapBounds: [], filterValues: [] };
-
-            if (typeof search.layers === 'string') initialSearch.layers.push(search.layers);
-            else initialSearch.layers = search.layers;
-            delete search.layers;
-            // for (var i = 0; i < initialSearch.layers.length; i++) {
-
-            //     if (!LayerHierarchy.isValidLayer(initialSearch.layers[i])) return false;
-            // }
-
-            if (typeof search.filters === 'string') initialSearch.filters.push(search.filters);
-            else initialSearch.filters = search.filters;
-            delete search.filters;
-            // for (var i = 0; i < initialSearch.filters.length; i++) {
-
-            //     if (!Filters.isValidFilter(initialSearch.filters[i])) return false;
-            // }
-
-            initialSearch.mapBounds = search.mapBounds; delete search.mapBounds;
-
-            for (var key in search) {
-                if (search.hasOwnProperty(key)) {
-
-                    var filterName_valueType = key.split('.');
-                    var index = initialSearch.filters.indexOf(filterName_valueType[0]);
-                    if (!initialSearch.filterValues[index]) initialSearch.filterValues[index] = { subtypes: [], input: [] };
-                    if (typeof search[key] === 'string') initialSearch.filterValues[index][filterName_valueType[1]].push(search[key]);
-                    else initialSearch.filterValues[index][filterName_valueType[1]] = (search[key]);
-                }
-            }
-
-            return initialSearch;
-        };
 
 
         /*
@@ -85,16 +46,102 @@
         */
         if ($location.path() === '/search') {
 
-            initialSearch = verifySearch($location.search());
+            exports.initialSearch = parseSearch($location.search());
+            setURL();
 
-            if (initialSearch) {
-                $log.log('initial search: ', initialSearch);
+        }
 
-            //    LayerListController.setLayers(initialSearch.layers);
-            //    FilterListController.setFilters(initialSearch.filters, initialSearch.filterValues);
-            //    MapController.setMapBounds(initialSearch.mapBounds);
 
-            } else $log.log('Invalid URL!');
+        /*
+        *   Parses the search into native objects.
+        */
+        function parseSearch(search) {
+
+            //  save layers
+            if (typeof search.layers === 'string') layers.push(search.layers);
+            else if (search.layers) layers = search.layers;
+            else layers = [];
+            delete search.layers;
+
+            //  save map bounds
+            mapBounds = search.mapBounds;
+            delete search.mapBounds;
+
+            //  non-filter-value key/value pairs have been removed from the
+            //  search, so the rest are encoded filter values.
+            encodedFilters = search;
+            var filtersPromise = Filters.done.then(function() {
+
+                exports.initialSearch.filters = decodeFilterValues(encodedFilters);
+
+            });
+
+
+            return {
+
+                    layers: layers,
+                    filtersPromise: filtersPromise,
+                    mapBounds: mapBounds,
+
+            };
+
+        };
+
+
+        /*
+        *   Decodes filter values into an array of filters.
+        */
+        function decodeFilterValues(encodedFilters) {
+
+            var decodedFilters = [];
+
+            for (var key in encodedFilters) {
+
+                if (encodedFilters.hasOwnProperty(key)) {
+
+                    var filterID_valueType = key.split('.');
+
+                    var filterIndex = +(filterID_valueType[0].split('-')[1]);
+                    if (!decodedFilters[filterIndex]) decodedFilters[filterIndex] = {};
+                    var filter = decodedFilters[filterIndex];
+
+                    var valueType = filterID_valueType[1];
+
+                    if (valueType === 'template') {
+
+                        var templateName = encodedFilters[key];
+                        filter.template = Filters.filterTemplates[templateName];
+
+                    }
+
+                    if (valueType === 'subtypes') {
+
+                        if (!filter.subtypes) filter.subtypes = {};
+
+                        if (typeof encodedFilters[key] === 'string') {
+
+                            var subtypeName = encodedFilters[key];
+                            filter.subtypes[subtypeName] = true;
+
+                        } else for (var i = 0; i < encodedFilters[key].length; i++) {
+
+                            var subtypeName = encodedFilters[key][i];
+                            filter.subtypes[subtypeName] = true;
+
+                        }
+                    }
+
+                    else {
+
+                        var valueIndex = key.split('_')[1];
+                        if (!filter.values) filter.values = [];
+                        filter.values[valueIndex] = encodedFilters[key];
+
+                    }
+
+                }
+            }
+            return decodedFilters;
         }
 
 
@@ -103,9 +150,8 @@
         */
         function setURL() {
 
-            var search = encodedFilterValues;
+            var search = encodedFilters;
             search.layers = layers;
-            search.filters = filters;
             search.mapBounds = mapBounds;
 
             $location.path('/search');
@@ -116,46 +162,53 @@
         /*
         *   Adds a layer to the URL bar.
         */
-        exports.addLayer = function(layerName) {
+        exports.setLayers = function(incomingLayers) {
 
-            layers.push(layerName);
+            layers = incomingLayers;
             setURL();
-        };
 
-
-        /*
-        *   Removes a layer from the URL bar.
-        */
-        exports.removeLayer = function(layerName) {
-
-            var index = layers.indexOf(layerName);
-            layers.splice(index, 1);
-            setURL();
         };
 
 
         /*
         *   Sets the filters in the URL bar.
         */
-        exports.setFilters = function(filterNames, filterValues) {
+        exports.setFilters = function(incomingFilters) {
 
-            filters = filterNames;
+            //  need to encode filters as an object with single-depth array
+            //  properties for successful URL encoding.
 
-            //  need to encode filter values and names
-            //  because search() only encodes objects
-            //  with a depth of one level.
-            for (var i = 0; i < filterNames.length; i++) {
-                var subtypesKey = filterNames[i] + '.subtypes';
-                var subtypesValues = filterValues[i].subtypes;
+            encodedFilters = {};
 
-                var inputKey = filterNames[i] + '.input';
-                var inputValues = filterValues[i].input;
+            for (var i = 0; i < incomingFilters.length; i++) {
 
-                encodedFilterValues[subtypesKey] = subtypesValues;
-                encodedFilterValues[inputKey] = inputValues;
+                var filter = incomingFilters[i];
+                var filterID = 'filter-' + i;
+
+                //  encode template
+                var templateKey = filterID + '.template';
+                var templateValue = filter.template.name;
+                encodedFilters[templateKey] = templateValue;
+
+                //  encode subtypes
+                var subtypesKey = filterID + '.subtypes';
+                var subtypesValues = [];
+                for (var subtype in filter.subtypes) {
+                    if (filter.subtypes.hasOwnProperty(subtype)) {
+                        if (filter.subtypes[subtype]) subtypesValues.push(subtype);
+                    }
+                }
+                encodedFilters[subtypesKey] = subtypesValues;
+
+                //  encode values
+                for (var j = 0; j < filter.values.length; j++) {
+                    var valueKey = filterID + '.value_' + j;
+                    encodedFilters[valueKey] = filter.values[j];
+                }
             }
 
             setURL();
+
         };
 
 
