@@ -54,7 +54,6 @@
             if (queryObject && queryObject.search) {
 
                 exports.initialSearch = parseSearch(queryObject.search);
-                console.log('url parsed: ', JSON.stringify(exports.initialSearch));
 
             }
 
@@ -161,7 +160,6 @@
             searchObject.search.layers = layers;
             searchObject.search.mapBounds = mapBounds;
             var queryString = JSON.stringify(searchObject);
-            console.log('url set: ', queryString);
             var encodedQueryString = encodeURIComponent(queryString);
 
             window.location.hash = encodedQueryString;

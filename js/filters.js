@@ -29,13 +29,10 @@
 
             if (URLController.initialSearch && URLController.initialSearch.filters) {
 
-                URLController.initialSearch.filtersPromise.then(function() {
+                $scope.activeFilters = URLController.initialSearch.filters;
+                ModifySearch.setFilters($scope.activeFilters);
+                URLController.setFilters($scope.activeFilters);
 
-                    $scope.activeFilters = URLController.initialSearch.filters;
-                    ModifySearch.setFilters($scope.activeFilters);
-                    URLController.setFilters($scope.activeFilters);
-
-                });
             }
 
 

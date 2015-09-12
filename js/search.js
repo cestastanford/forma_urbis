@@ -42,7 +42,7 @@
     *   Service that allows changes to the search parameters
     *   and updates the search results on parameter change.
     */
-    module.factory('ModifySearch', function($q, SearchResults) {
+    module.factory('ModifySearch', function($q, $rootScope, SearchResults) {
 
         /*
         *   Internal state variables.
@@ -73,6 +73,7 @@
                 //  update the model
                 activeDatasets.push(dataset);
                 SearchResults.filteredActiveDatasets.push(filteredDataset);
+                $rootScope.$emit('refresh');
 
                 /* stop progress indicator here */
             });
@@ -107,6 +108,7 @@
             //  from activeDatasets and filteredActiveDatasets together,
             //  so indices match up.
             SearchResults.filteredActiveDatasets.splice(index, 1);
+            $rootScope.$emit('refresh');
         };
 
 
@@ -116,7 +118,7 @@
         *   Parameters: array of filter names, array of filter values
         */
         exports.setFilters = function(incomingActiveFilters) {
-
+            console.log('filters set');
             /* start progress indicator here */
 
             //  update the model
@@ -129,6 +131,8 @@
                 //  this preserves index consistency because Promise.all
                 //  returns results in the same order as the promise array.
                 SearchResults.filteredActiveDatasets = filteredDatasets;
+                console.log('filtered datasets now available');
+                $rootScope.$emit('refresh');
 
                 /* stop progress indicator here */
             });
@@ -150,8 +154,12 @@
 
                     worker.addEventListener('message', function(event) {
 
-                        if (event.data.hasOwnProperty('message')) $log.log('From worker: ', event.data.message);
-                        else resolve(event.data);   /* stop progress indicator here */
+                        if (event.data.hasOwnProperty('message')) console.log('From worker: ', event.data.message);
+                        else {
+                            console.log('finished filtering');
+                            resolve(event.data);   /* stop progress indicator here */
+                        }
+
                     });
 
                     worker.addEventListener('error', function(event) {
@@ -165,6 +173,7 @@
                         activeFilters: activeFilters,
 
                     });
+                    console.log('started filtering');
 
                 } else resolve(dataset); /* stop progress indicator here */
 
