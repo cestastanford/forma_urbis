@@ -54,7 +54,7 @@
     *   changes in the source layers for updating.  It also communicates with
     *   the URL controller to set and save the map bounds.
     */
-    module.controller('MapController', function($scope, $rootScope, SearchResults, MapRasterService, URLController) {
+    module.controller('MapController', function($scope, $rootScope, SearchResults, MapRasterService, URLController, Datasets) {
 
         /*
         *   The currently displayed raster and vector Leaflet layers.
@@ -226,8 +226,29 @@
 
                 var newVectorLayer = L.geoJson(vectorDatasetToAdd.data, {
 
+                    onEachFeature: function(feature, layer) {
+
+                        var dataset = Datasets.datasets.vector.filter(function(ds) { return ds.name === feature.datasetName; })[0];
+                        var popupContent = feature.properties[dataset.fields[dataset.labelField].name];
+
+                        layer.bindPopup(popupContent);
+
+                        layer.on('mouseover', function(event) {
+
+                            this.openPopup();
+
+                        });
+
+                        layer.on('click', function(event) {
+
+                            $rootScope.$emit('detail', feature);
+
+                        });
+
+                    },
+
                     pointToLayer: function (feature, latlng) {
-                        if (!window.hey) { console.log(vectorDatasetToAdd); window.hey = {}; }
+
                         return L.circleMarker(latlng, $.extend({}, MARKER_STYLE, {color: vectorDatasetToAdd.color}));
 
                     },
@@ -246,6 +267,7 @@
         };
 
     });
+
 
     /*
     *   The directive for the map element in the HTML.

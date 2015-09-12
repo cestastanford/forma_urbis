@@ -1,0 +1,9 @@
+<h2>Results</h2>
+<ul ng-repeat="dataset in results">
+    <li ng-repeat="feature in dataset.data.features" ng-click="detail(feature)">
+        <strong>{{ dataset.name }}: </strong>
+        <span>{{ feature.properties[dataset.fields[dataset.labelField].name] }}</span>
+    </li>
+    <hr>
+</ul>
+
