@@ -1,10 +1,13 @@
-<div class="title">Layers</div>
-<ul>
-    <li ng-repeat="item in list" style="padding-left: {{ (item.depth * 5) + 'px;' }}">
-        <input type="checkbox" name="{{ item.name }}" ng-model="item.checked" ng-change="updateLayers(item);">
-        <span class="layer-name">{{ item.name }}</span>
-        <span class="layer-icon" ng-show="item.type === 'group'">▽</span>
-        <span class="layer-icon" ng-show="item.type === 'raster'">ⓡ</span>
-        <span class="layer-icon" style="color: {{ item.color }};" ng-show="item.type === 'vector'">ⓥ</span>
-    </li>
-</ul>
+<h3>Layers</h3>
+<hr>
+<div class="">
+    <ul class="list-group">
+        <li ng-repeat="item in list" style="margin-left: {{ (item.depth * 15 + 10) + 'px;' }}" class="list-group-item layer">
+            <input type="checkbox" name="{{ item.name }}" ng-model="item.checked" ng-change="updateLayers(item);">
+            <span class="layer-name">{{ item.name }}</span>
+            <span class="layer-icon" ng-show="item.type === 'group'">▾</span>
+            <span class="layer-icon" ng-show="item.type === 'raster'">ⓡ</span>
+            <span class="layer-icon" style="color: {{ item.color }};" ng-show="item.type === 'vector'">ⓥ</span>
+        </li>
+    </ul>
+</div>

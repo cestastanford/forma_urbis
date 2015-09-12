@@ -35,7 +35,7 @@
 
         return {
 
-            restrict: 'E',
+            restrict: 'A',
             templateUrl: 'templates/resultsList.html'
 
         }

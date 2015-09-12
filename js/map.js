@@ -276,7 +276,7 @@
 
         return {
 
-            restrict: 'E',
+            restrict: 'A',
             template: '<div id="map"></div>',
         };
 

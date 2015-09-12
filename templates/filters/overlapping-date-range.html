@@ -1,0 +1,74 @@
+<h4>Filter by date</h4>
+<div>
+    <div style="padding-bottom: 70px;">
+        <no-ui-slider></no-ui-slider>
+    </div>
+    <span>
+        <input type="number" ng-model="activeFilters[$index].values[0]">
+        <span style="padding: 10px;">to</span>
+        <input type="number" ng-model="activeFilters[$index].values[0]" id="end-date">
+    </span>
+</div>
+<script>
+    (function(undefined) {
+
+        var module = angular.module('FormaUrbisRomae');
+
+        module.directive('noUiSlider', function() {
+
+            return {
+
+                restrict: 'E',
+                link: function(scope, element) {
+
+                    var slider = element;
+                    console.log(element, noUiSlider);
+                    noUiSlider.create(slider, {
+
+                        start: [-1000, 2015],
+                        step: 1,
+                        margin: 1,
+                        connect: true,
+                        direction: 'ltr',
+                        orientation: 'horizontal',
+                        behaviour: 'drag-tap',
+                        range: {
+                            min: -1000,
+                            max: 2015,
+                        },
+                        pips: {
+                            mode: 'values',
+                            density: 3,
+                            values: [-1000, 0, 500, 1000, 1500, 2000],
+                            format: wNumb({
+                                decimals: 0,
+                                negative: 'BCE ',
+                            }),
+                        },
+
+                    });
+
+                    slider.noUiSlider.on('update', function(values) {
+
+                        activeFilters[$index].values[0] = Math.floor(values[0]);
+                        activeFilters[$index].values[1] = Math.floor(values[1]);
+
+                    });
+
+                    scope.$watchCollection('activeFilters[$index].values', function(updated) {
+
+                        slider.noUiSlider.set(updated);
+
+                    });
+
+                    activeFilters[$index].values[0] = '';
+                    activeFilters[$index].values[1] = '';
+
+                }
+
+            }
+
+        });
+
+    })();
+</script>

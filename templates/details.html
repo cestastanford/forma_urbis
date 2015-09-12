@@ -1,9 +1,12 @@
-<div ng-show="feature">
-    <h2>Details</h2>
-    <strong>Dataset:</strong>
-    <span>{{ dataset.name }}</span>
-    <div ng-repeat="field in dataset.fields" ng-show="feature.properties[field.name]">
-        <strong>{{ field.displayName }}: </strong>
-        <span>{{ feature.properties[field.name] }}</span>
+<div class="" ng-show="feature">
+    <h3>Details</h3>
+    <hr>
+    <div class="scroll">
+        <strong>Dataset:</strong>
+        <span>{{ dataset.name }}</span>
+        <div ng-repeat="field in dataset.fields" ng-show="feature.properties[field.name]">
+            <strong>{{ field.displayName }}: </strong>
+            <span>{{ feature.properties[field.name] }}</span>
+        </div>
     </div>
 </div>

@@ -35,7 +35,7 @@
             "name": "START_DATE",
             "type": "date",
             "subtype": "Excavation Start Date",
-            "format": "year",
+            "format": "string",
             "displayName": "Excavation Start Date",
             "description": "The start date of the feature excavation."
         },
@@ -43,7 +43,7 @@
             "name": "End_DATE",
             "type": "date",
             "subtype": "Excavation End Date",
-            "format": "year",
+            "format": "string",
             "displayName": "Excavation End Date",
             "description": "The end date of the feature excavation."
         },

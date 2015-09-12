@@ -1,0 +1,4 @@
+<h4>Filter by type</h4>
+<select ng-model="activeFilters[$index].values[0]">
+    <option ng-repeat="(type, count) in filterAssets.featureTypes" value="{{ type}} ">{{ type }} ({{ count }})</option>
+</select>

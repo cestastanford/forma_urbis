@@ -1,8 +1,43 @@
 body {
-    margin: 10px;
+    margin: 20px;
+    margin-left: 5px;
+}
+
+.top-panes {
+    height: 60vh;
+    overflow: scroll;
+}
+
+.bottom-panes {
+    height: 30vh;
+    overflow: scroll;
 }
 
 #map {
-    width: 500px;
-    height: 500px;
+    height: 100%;
+}
+
+.scroll {
+    overflow: scroll;
+}
+
+.layer {
+    margin: 10px;
+}
+
+.layer-icon {
+    float: right;
+}
+
+input[type="checkbox"] {
+    margin: 5px;
+}
+
+input[type="text"] {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.remove-filter {
+    margin-top: 10px;
 }

@@ -12,6 +12,9 @@
     <!-- Library Stylesheets (Bootstrap) -->
     <link href="css/lib/bootstrap.min.css" rel="stylesheet">
     <link href="css/lib/leaflet.css" rel="stylesheet">
+    <link href="css/lib/nouislider.min.css" rel="stylesheet">
+    <link href="css/lib/nouislider.pips.css" rel="stylesheet">
+    <link href="css/lib/normalize.css" rel="stylesheet">
 
     <!-- Custom Stylesheets -->
     <link href="css/styles.css" rel="stylesheet">
@@ -22,25 +25,19 @@
 
     <div id="content-wrapper">
 
-        <layers ng-controller="LayerListController"></layers>
+        <div class="col-md-3 top-panes">
 
-        <hr>
+            <div layers class="well" ng-controller="LayerListController"></div>
 
-        <filters ng-controller="FilterListController"></filters>
+            <div filters class="well" ng-controller="FilterListController"></div>
 
-        <hr>
+        </div>
 
-        <map ng-controller="MapController"></map>
+        <div map class="well col-md-9 top-panes" ng-controller="MapController"></div>
 
-        <hr>
+        <div results class="well col-md-9 bottom-panes" ng-controller="ResultsListController"></div>
 
-        <results ng-controller="ResultsListController"></results>
-
-        <hr>
-
-        <feature-details ng-controller="DetailsController"></feature-details>
-
-        <hr>
+        <div feature-details class="well col-md-3 bottom-panes" ng-controller="DetailsController"></div>
 
     </div>
 
@@ -51,6 +48,8 @@
     <script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/lib/angular.js"></script>
     <script type="text/javascript" src="js/lib/leaflet.js"></script>
+    <script type="text/javascript" src="js/lib/nouislider.min.js"></script>
+    <script type="text/javascript" src="js/lib/wNumb.min.js"></script>
 
     <!-- Custom scripts -->
     <script type="text/javascript" src="js/data.js"></script>

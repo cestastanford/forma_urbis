@@ -23,6 +23,8 @@
         var AUTOUPDATE_INTERVAL = 500;
         var refreshPending = false;
 
+        $scope.filterAssets = Filters.filterAssets;
+
         $scope.activeFilters = [];
 
         URLController.done.then(function() {
@@ -68,6 +70,8 @@
 
             });
 
+            $scope.selectedTemplate = '';
+
         };
 
         //  removes a filter
@@ -88,7 +92,7 @@
     module.directive('filters', function() {
 
         return {
-            restrict: 'E',
+            restrict: 'A',
             templateUrl: 'templates/filters.html',
         };
 
@@ -117,5 +121,67 @@
         }
 
     });
+
+
+    /*
+    *   Directive for the date slider – doesn't work!
+    *
+    module.directive('noUiSlider', function() {
+
+        return {
+
+            restrict: 'E',
+            link: function(scope, element) {
+
+                var slider = element[0];
+                console.log(element, noUiSlider);
+                noUiSlider.create(slider, {
+
+                    start: [-1000, 2015],
+                    step: 1,
+                    margin: 1,
+                    connect: true,
+                    direction: 'ltr',
+                    orientation: 'horizontal',
+                    behaviour: 'drag-tap',
+                    range: {
+                        min: -1000,
+                        max: 2015,
+                    },
+                    pips: {
+                        mode: 'values',
+                        density: 3,
+                        values: [-1000, 0, 500, 1000, 1500, 2000],
+                        format: wNumb({
+                            decimals: 0,
+                            negative: 'BCE ',
+                        }),
+                    },
+
+                });
+
+                slider.noUiSlider.on('update', function(values) {
+
+                    scope.activeFilters[$index].values[0] = Math.floor(values[0]);
+                    scope.activeFilters[$index].values[1] = Math.floor(values[1]);
+
+                });
+
+                scope.$watchCollection('activeFilters[$index].values', function(updated) {
+
+                    slider.noUiSlider.set(updated);
+
+                });
+
+                activeFilters[$index].values[0] = '';
+                activeFilters[$index].values[1] = '';
+
+            }
+
+        }
+
+    });
+*/
+
 
 })();

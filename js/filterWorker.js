@@ -22,6 +22,8 @@ addEventListener('message', function(event) {
     if (!dataset) console_log('no dataset sent to filter!');
     var activeFilters = event.data.activeFilters;
 
+    console_log(dataset);
+    console_log(activeFilters);
     var filteredDataset = filter(dataset, activeFilters);
 
     postMessage(filteredDataset);
@@ -182,6 +184,7 @@ var conversions = {
 
     'date': {
 
+        //  converts from text dates or text dates separated by slashes
         'text-period-slash-delim': function(input) {
 
             var FIRST_DATE = -2000;
@@ -222,9 +225,17 @@ var conversions = {
             } else if (periods[input]) return periods[input];
         },
 
+        //  converts from number strings to integers
         'string, string': function(input) {
 
             return [+input[0], +input[1]];
         },
+
+        //  converts from a single string to two integers
+        'string': function(input) {
+
+            return [+input, +input];
+
+        }
     }
 };

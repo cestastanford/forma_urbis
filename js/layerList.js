@@ -239,7 +239,7 @@
     module.directive('layers', function() {
 
         return {
-            restrict: 'E',
+            restrict: 'A',
             templateUrl: 'templates/layerList.html',
         };
 

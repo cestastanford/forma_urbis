@@ -24,7 +24,6 @@
 
             $scope.feature = feature;
             $scope.dataset = Datasets.datasets.vector.filter(function(ds) { return ds.name === feature.datasetName; })[0];
-            console.log(feature, Datasets);
 
         });
 
@@ -41,7 +40,7 @@
 
         return {
 
-            restrict: 'E',
+            restrict: 'A',
             templateUrl: 'templates/details.html'
 
         }
