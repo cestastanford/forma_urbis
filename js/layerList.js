@@ -19,16 +19,14 @@
     *   Controller for the layer list view.  Deals with synchronizing the
     *   checkboxes and sending any updates to the search model.
     */
-    module.controller('LayerListController', function($scope, $q, $timeout, LayerHierarchy, ModifySearch, URLController, MapRasterService) {
-
-        var INITIAL_LAYERS = [];
+    module.controller('LayerListController', function($scope, $q, LayerHierarchy, ModifySearch, MapRasterService, URLController) {
 
         $scope.list = [];
 
-        LayerHierarchy.done.then(function() {
+        URLController.done.then(function() {
 
             listSublayers(LayerHierarchy.layerHierarchy, [], 0);
-            $timeout(setInitialLayers, 0);
+            setInitialLayers();
 
         });
 
@@ -89,7 +87,7 @@
         */
         function setInitialLayers() {
 
-            if (URLController.initialSearch) {
+            if (URLController.initialSearch && URLController.initialSearch.layers) {
 
                 activeLayerNames = URLController.initialSearch.layers;
 
@@ -100,7 +98,7 @@
                     if (index > -1) {
 
                         layer.checked = true;
-                        updateAncestorLayers(layer);
+                        setTimeout(function() { updateAncestorLayers(layer); }, 0);
 
                         if (layer.type === 'vector') ModifySearch.addDatasetSync(layer.source);
                         if (layer.type === 'raster') MapRasterService.activeRasterLayers.push(layer.source);
@@ -222,7 +220,7 @@
                     element.indeterminate = false;
                     ancestorLayer.checked = false;
 
-                //  if some descendants are checked, intermediate-check the parent
+                //  if some descendants are checked, indeterminate-check the parent
                 } else {
 
                     element.indeterminate = true;

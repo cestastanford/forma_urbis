@@ -14,13 +14,7 @@
     module.controller('TestController', function($scope, $q, Datasets, LayerHierarchy, Filters) {
 
         //  object noting the status of each setup item.
-        $scope.setupProgress = {
 
-            datasets: Datasets.done.then().$$state,
-            layerHierarchy: LayerHierarchy.done.then().$$state,
-            filters: Filters.done.then().$$state,
-
-        };
 
         // $q.all([Datasets.done, LayerHierarchy.done, Filters.done])
         // .then(function() {

@@ -42,7 +42,7 @@
     *   Service that allows changes to the search parameters
     *   and updates the search results on parameter change.
     */
-    module.factory('ModifySearch', function($log, $http, $q, SearchResults, Filters) {
+    module.factory('ModifySearch', function($q, SearchResults) {
 
         /*
         *   Internal state variables.

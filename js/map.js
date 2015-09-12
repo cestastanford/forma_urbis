@@ -54,7 +54,7 @@
     *   changes in the source layers for updating.  It also communicates with
     *   the URL controller to set and save the map bounds.
     */
-    module.controller('MapController', function($scope, $window, SearchResults, MapRasterService, URLController) {
+    module.controller('MapController', function($scope, SearchResults, MapRasterService, URLController) {
 
         /*
         *   The currently displayed raster and vector Leaflet layers.
@@ -62,11 +62,12 @@
         var rasterLayersOnMap = [];
         var vectorLayersOnMap = [];
 
+
         /*
         *   The data sources for the map.
         */
         $scope.raster = MapRasterService.activeRasterLayers;
-        $scope.vector = SearchResults.filteredActiveDatasets;
+        $scope.vector = SearchResults;
 
 
         /*
@@ -109,7 +110,7 @@
         *   Sets up the Leaflet map on the page.
         */
         var map = L.map('map', MAP_OPTIONS);
-        if (URLController.initialSearch) {
+        if (URLController.initialSearch && URLController.initialSearch.mapBounds) {
 
             map.fitBounds(URLController.initialSearch.mapBounds);
 
@@ -117,9 +118,8 @@
 
 
         /*
-        *   Updates the URL bar initially and when the map bounds change.
+        *   Updates the URL bar when the map bounds change.
         */
-        URLController.setMapBounds(map.getBounds());
         map.on('moveend zoomend', function() {
 
             URLController.setMapBounds(map.getBounds());
@@ -147,7 +147,7 @@
         *   Sets up a watch for changes to the vector layers, updating the map
         *   if layers are added, removed or changed.
         */
-        $scope.$watchCollection('vector', function(now, before) {
+        $scope.$watchCollection('vector.filteredActiveDatasets', function(now, before) {
 
             //  get the added or removed layers
             var added = now.filter(function(layer) { return before.indexOf(layer) < 0; });
@@ -209,12 +209,12 @@
         *   Adds a vector layers to the Leaflet map.
         */
         function addVectorLayers(vectorLayersToAdd) {
-
+            console.log('layers added: ', vectorLayersToAdd);
             for (var i = 0; i < vectorLayersToAdd.length; i++) {
 
                 var vectorLayerToAdd = vectorLayersToAdd[i];
 
-                var newVectorLayer = L.geoJson(vectorLayerToAdd.geoJSON, {
+                var newVectorLayer = L.geoJson(vectorLayerToAdd.data, {
 
                     pointToLayer: function (feature, latlng) {
 
@@ -227,7 +227,7 @@
                 });
 
                 map.addLayer(newVectorLayer);
-                if (vectorLayerToAdd.geoJSON.totalFeatures && vectorLayerToAdd.geoJSON.features[0].geometry.type !== 'Point') newVectorLayer.bringToBack();
+                if (vectorLayerToAdd.data.totalFeatures && vectorLayerToAdd.data.features[0].geometry.type !== 'Point') newVectorLayer.bringToBack();
 
                 vectorLayersOnMap.push({
                     name: vectorLayerToAdd.name,
@@ -243,7 +243,7 @@
         *   Removes a vector layer from the Leaflet map.
         */
         function removeVectorLayers(vectorLayersToRemove) {
-
+            console.log('layers removed: ', vectorLayersToRemove);
             for (var i = 0; i < vectorLayersToRemove.length; i++) {
 
                 var vectorLayerToRemove = vectorLayersToRemove[i];

@@ -25,17 +25,40 @@
 
         $scope.activeFilters = [];
 
-        if (URLController.initialSearch) {
+        URLController.done.then(function() {
 
-            URLController.done = URLController.initialSearch.filtersPromise.then(function() {
+            if (URLController.initialSearch && URLController.initialSearch.filters) {
 
-                $scope.activeFilters = URLController.initialSearch.filters;
-                ModifySearch.setFilters($scope.activeFilters);
-                URLController.setFilters($scope.activeFilters);
+                URLController.initialSearch.filtersPromise.then(function() {
 
-            });
+                    $scope.activeFilters = URLController.initialSearch.filters;
+                    ModifySearch.setFilters($scope.activeFilters);
+                    URLController.setFilters($scope.activeFilters);
 
-        }
+                });
+            }
+
+
+            //  update the search once for every interval of changes
+            $scope.$watch('activeFilters', function() {
+
+                if (!refreshPending) {
+
+                    refreshPending = true;
+
+                    $timeout(function() {
+
+                        ModifySearch.setFilters($scope.activeFilters);
+                        URLController.setFilters($scope.activeFilters);
+                        refreshPending = false;
+
+                    }, AUTOUPDATE_INTERVAL);
+
+                };
+
+
+            }, true);
+        });
 
         //  adds a new filter
         $scope.addFilter = function(templateName) {
@@ -59,26 +82,6 @@
 
         //  expose the Filters object to the view
         $scope.Filters = Filters;
-
-        //  update the search once for every interval of changes
-        $scope.$watch('activeFilters', function() {
-
-            if (!refreshPending) {
-
-                refreshPending = true;
-
-                $timeout(function() {
-
-                    ModifySearch.setFilters($scope.activeFilters);
-                    URLController.setFilters($scope.activeFilters);
-                    refreshPending = false;
-
-                }, AUTOUPDATE_INTERVAL);
-
-            };
-
-
-        }, true);
 
     });
 

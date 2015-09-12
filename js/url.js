@@ -20,39 +20,45 @@
     *   those search conditions.  The controller also updates the URL with
     *   a string representing the current application state.
     */
-    module.factory('URLController', function($log, $location, LayerHierarchy, Filters) {
+    module.factory('URLController', function($q, $location, LayerHierarchy, Filters) {
 
 
         /*
         *   Exports object.
         */
-        var exports = {};
+        var exports = {
 
-        /*
-        *   Holds the promise from the initial filtering.
-        */
-        exports.done = null;
+            initialSearch: null,
+            done: null,
+
+        };
+
 
         /*
         *   Saved state.
         */
-        var layers = [];
+        var layers = null;
         var encodedFilters = {};
-        var mapBounds = [];
+        var mapBounds = null;
 
 
         /*
         *   Loads initial state from URL, if URL contains valid data.
         */
-        var hash = window.location.hash;
-        var queryString = hash ? decodeURIComponent(window.location.hash.substring(2)) : null;
-        var queryObject = queryString ? JSON.parse(queryString) : null;
-        if (queryObject && queryObject.search) {
+        exports.done = $q.all([Filters.done, LayerHierarchy.done]).then(function() {
 
-            exports.initialSearch = parseSearch(queryObject.search);
-            setURL();
+            var hash = window.location.hash;
+            var queryString = hash ? decodeURIComponent(window.location.hash.substring(2)) : null;
+            var queryObject = queryString ? JSON.parse(queryString) : null;
 
-        }
+            if (queryObject && queryObject.search) {
+
+                exports.initialSearch = parseSearch(queryObject.search);
+                console.log('url parsed: ', JSON.stringify(exports.initialSearch));
+
+            }
+
+        });
 
 
         /*
@@ -63,28 +69,23 @@
             //  save layers
             if (typeof search.layers === 'string') layers.push(search.layers);
             else if (search.layers) layers = search.layers;
-            else layers = [];
+            else layers = null;
             delete search.layers;
 
             //  save map bounds
             mapBounds = search.mapBounds;
-            var decodedMapBounds = [[mapBounds[0], mapBounds[1]], [mapBounds[2], mapBounds[3]]]
+            var decodedMapBounds = mapBounds ? [[mapBounds[0], mapBounds[1]], [mapBounds[2], mapBounds[3]]] : null;
             delete search.mapBounds;
 
             //  non-filter-value key/value pairs have been removed from the
             //  search, so the rest are encoded filter values.
             encodedFilters = search;
-            var filtersPromise = Filters.done.then(function() {
-
-                exports.initialSearch.filters = decodeFilterValues(encodedFilters);
-
-            });
-
+            decodedFilters = decodeFilters(encodedFilters);
 
             return {
 
                 layers: layers,
-                filtersPromise: filtersPromise,
+                filters: decodedFilters,
                 mapBounds: decodedMapBounds,
 
             };
@@ -95,13 +96,15 @@
         /*
         *   Decodes filter values into an array of filters.
         */
-        function decodeFilterValues(encodedFilters) {
+        function decodeFilters(encodedFilters) {
 
-            var decodedFilters = [];
+            var decodedFilters = null;
 
             for (var key in encodedFilters) {
 
                 if (encodedFilters.hasOwnProperty(key)) {
+
+                    if (!decodedFilters) decodedFilters = [];
 
                     var filterID_valueType = key.split('.');
 
@@ -158,6 +161,7 @@
             searchObject.search.layers = layers;
             searchObject.search.mapBounds = mapBounds;
             var queryString = JSON.stringify(searchObject);
+            console.log('url set: ', queryString);
             var encodedQueryString = encodeURIComponent(queryString);
 
             window.location.hash = encodedQueryString;

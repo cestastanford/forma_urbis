@@ -32,6 +32,7 @@
 
             datasets: { vector: [], raster: [] },
             done: null,
+
         };
 
 
@@ -126,6 +127,7 @@
 
             layerHierarchy: null,
             done: null,
+
         };
 
 
@@ -229,9 +231,6 @@
         .then(setupFilterTemplates); // gathers required data and publishes the filter templates
 
 
-        /*
-        *   Verifies the layer hierarchy and adds it to a public instance variable.
-        */
         function setupFilterTemplates(response) {
 
             return $q(function(resolve, reject) {
