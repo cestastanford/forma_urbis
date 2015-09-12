@@ -44,9 +44,12 @@
         /*
         *   Loads initial state from URL, if URL contains valid data.
         */
-        if ($location.path() === '/search') {
+        var hash = window.location.hash;
+        var queryString = hash ? decodeURIComponent(window.location.hash.substring(2)) : null;
+        var queryObject = queryString ? JSON.parse(queryString) : null;
+        if (queryObject && queryObject.search) {
 
-            exports.initialSearch = parseSearch($location.search());
+            exports.initialSearch = parseSearch(queryObject.search);
             setURL();
 
         }
@@ -65,8 +68,7 @@
 
             //  save map bounds
             mapBounds = search.mapBounds;
-            var decodedMapBounds = [[+mapBounds[0], +mapBounds[1]], [+mapBounds[2], +mapBounds[3]]]
-            console.log(decodedMapBounds);
+            var decodedMapBounds = [[mapBounds[0], mapBounds[1]], [mapBounds[2], mapBounds[3]]]
             delete search.mapBounds;
 
             //  non-filter-value key/value pairs have been removed from the
@@ -152,13 +154,13 @@
         */
         function setURL() {
 
-            var search = encodedFilters;
-            search.layers = layers;
-            search.mapBounds = mapBounds;
-            console.log(search.mapBounds);
+            var searchObject = { search: encodedFilters };
+            searchObject.search.layers = layers;
+            searchObject.search.mapBounds = mapBounds;
+            var queryString = JSON.stringify(searchObject);
+            var encodedQueryString = encodeURIComponent(queryString);
 
-            $location.path('/search');
-            $location.search(search);
+            window.location.hash = encodedQueryString;
 
         };
 
@@ -222,10 +224,10 @@
         exports.setMapBounds = function(mapBoundsObject) {
 
             mapBounds = [
-                '' + mapBoundsObject._northEast.lat,
-                '' + mapBoundsObject._northEast.lng,
-                '' + mapBoundsObject._southWest.lat,
-                '' + mapBoundsObject._southWest.lng
+                mapBoundsObject._northEast.lat,
+                mapBoundsObject._northEast.lng,
+                mapBoundsObject._southWest.lat,
+                mapBoundsObject._southWest.lng
             ];
 
             setURL();

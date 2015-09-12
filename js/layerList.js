@@ -172,7 +172,7 @@
                 if (changedViewLayer.type === 'raster') {
 
                     if (changedViewLayer.checked) MapRasterService.addRasterLayer(changedViewLayer.source);
-                    else MapRasterService.removeRasterLayer(layer.source);
+                    else MapRasterService.removeRasterLayer(changedViewLayer.source);
 
                 }
 

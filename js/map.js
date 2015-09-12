@@ -111,7 +111,6 @@
         var map = L.map('map', MAP_OPTIONS);
         if (URLController.initialSearch) {
 
-            console.log('bounds fit: ', URLController.initialSearch.mapBounds);
             map.fitBounds(URLController.initialSearch.mapBounds);
 
         };
@@ -187,7 +186,7 @@
         /*
         *   Removes a raster layer from the Leaflet map.
         */
-        this.removeRasterLayers = function(rasterLayersToRemove) {
+        function removeRasterLayers(rasterLayersToRemove) {
 
             for (var i = 0; i < rasterLayersToRemove.length; i++) {
 
@@ -198,7 +197,7 @@
                     return rasterLayerToRemove.name === rasterLayerOnMap.name;
                 })[0];
 
-                this.mapElement.removeLayer(rasterLayerOnMap.leafletLayer);
+                map.removeLayer(rasterLayerOnMap.leafletLayer);
                 var index = rasterLayersOnMap.indexOf(rasterLayerOnMap);
                 rasterLayersOnMap.splice(index, 1);
 
